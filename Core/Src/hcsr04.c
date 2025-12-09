@@ -48,7 +48,7 @@ void TIM1_CC_IRQHandler(void) {
 			} else if (start_time > end_time) {
 				//when this condition is true means that the ARR got overflowed and reseted to zero
 				//got this from AI but its genius, we do this
-				//first we make the starttime as smaller than the endtime and thats it and we do our calculation
+				//first we make the starttime as smaller than the endtime so we dont get a minus value and thats it and we do our calculation
 				diffrence = (TOP_VAL - start_time) + end_time;
 
 			}
@@ -68,7 +68,7 @@ void delay_us(uint32_t us) {
 void hcsr04_trig(void) {
 	GPIOA->BSRR |= (1 << 9);			//HIGH
 	delay_us(10);						//small delay
-	GPIOA->BSRR |= (1 << 24);		//LOW
+	GPIOA->BSRR |= (1 << 25);		//LOW
 }
 uint32_t  hcsr04_get_pulse_width(void){
 	return diffrence;
