@@ -1,5 +1,5 @@
-#ifndef INC_PWM_H_
-#define INC_PWM_H_
+#ifndef PWM_H_
+#define PWM_H_
 
 #include "stm32f446xx.h"
 #include <stdint.h>

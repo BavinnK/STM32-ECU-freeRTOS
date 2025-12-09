@@ -36,7 +36,8 @@ void hcsr04_init(void) {
 
 void TIM1_CC_IRQHandler(void) {
 	if (TIM1->SR & (1 << 1)) {
-		if (is_first_cap == 0) {//when is_first_cap is 0 it means its rising edge
+		if (is_first_cap == 0) {
+			//when is_first_cap is 0 it means its rising edge
 			start_time = TIM1->CCR1;
 			is_first_cap = 1;
 		} else {
@@ -44,7 +45,8 @@ void TIM1_CC_IRQHandler(void) {
 
 			if (start_time < end_time) {
 				diffrence = end_time - start_time;
-			} else if (start_time > end_time) {	//when this condition is true means that the ARR got overflowed and reseted to zero
+			} else if (start_time > end_time) {
+				//when this condition is true means that the ARR got overflowed and reseted to zero
 				//got this from AI but its genius, we do this
 				//first we make the starttime as smaller than the endtime and thats it and we do our calculation
 				diffrence = (TOP_VAL - start_time) + end_time;
@@ -53,6 +55,21 @@ void TIM1_CC_IRQHandler(void) {
 			is_first_cap = 0;
 		}
 
-		TIM1->SR &= ~(1 << 1);			//clear manually
+		TIM1->SR &= ~(1 << 1);//clear manually
 	}
+}
+//the interrupt is done
+//quick and dirty delay in us
+void delay_us(uint32_t us) {
+	for (uint32_t i = 0; i < us * 12; i++) {
+		__asm__("nop");
+	}
+}
+void hcsr04_trig(void) {
+	GPIOA->BSRR |= (1 << 9);			//HIGH
+	delay_us(10);						//small delay
+	GPIOA->BSRR |= (1 << 24);		//LOW
+}
+uint32_t  hcsr04_get_pulse_width(void){
+	return diffrence;
 }

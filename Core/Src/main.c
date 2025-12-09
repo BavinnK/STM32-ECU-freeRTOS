@@ -19,6 +19,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "pwm.h"
+#include "hcsr04.h"
+#include "myUSART2.h"
+#include <stdio.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -65,9 +68,19 @@ static void MX_GPIO_Init(void);
 int main(void)
 {
 	pwm_fan_init(1000, 5);
+	hcsr04_init();
+	USART2_init();
 
+	char buff[60];
   while (1)
   {
+	  hcsr04_trig();
+	  uint32_t data_cm=hcsr04_get_pulse_width()/58;
+	  sprintf(buff,"distance in cm: %ld \n\r",data_cm);
+	  send_str(buff);
+
+
+
 
   }
 
