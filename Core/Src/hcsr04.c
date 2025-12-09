@@ -1,4 +1,8 @@
 #include "hcsr04.h"
+#define TOP_VAL 0xFFFF
+volatile uint32_t start_time = 0, end_time = 0, diffrence = 0;
+volatile uint8_t is_first_cap = 0;
+
 void hcsr04_init(void) {
 	//PA9 for trig and PA8 for echo
 	RCC->AHB1ENR |= (0b1);
@@ -20,11 +24,35 @@ void hcsr04_init(void) {
 	//and we will set CH1 as normal input mode
 	TIM1->PSC = 15;
 	TIM1->ARR = 0xFFFF;	//we want the timer to count as long as possible for the 16 bit is 65536
-	TIM1->CCMR1 &= ~(0b11 << 1);
+	TIM1->CCMR1 &= ~(0b11);
 	TIM1->CCMR1 |= (0b01 << 0);
-	TIM1->CCER |= (1 << 3) | (0b11 << 0);
+	TIM1->CCER |= (1 << 3) | (1 << 1) | (1 << 0);
+	TIM1->CR1 |= (1 << 0);
 
 	//now for the INT coniguration
-	TIM1->DIER|=(1<<1);
+	TIM1->DIER |= (1 << 1);
 	NVIC_EnableIRQ(TIM1_CC_IRQn);
+}
+
+void TIM1_CC_IRQHandler(void) {
+	if (TIM1->SR & (1 << 1)) {
+		if (is_first_cap == 0) {//when is_first_cap is 0 it means its rising edge
+			start_time = TIM1->CCR1;
+			is_first_cap = 1;
+		} else {
+			end_time = TIM1->CCR1;
+
+			if (start_time < end_time) {
+				diffrence = end_time - start_time;
+			} else if (start_time > end_time) {	//when this condition is true means that the ARR got overflowed and reseted to zero
+				//got this from AI but its genius, we do this
+				//first we make the starttime as smaller than the endtime and thats it and we do our calculation
+				diffrence = (TOP_VAL - start_time) + end_time;
+
+			}
+			is_first_cap = 0;
+		}
+
+		TIM1->SR &= ~(1 << 1);			//clear manually
+	}
 }

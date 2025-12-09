@@ -1,2 +1,3 @@
 ../Drivers/CMSIS/Include/core_cm4.h:1684:22:__NVIC_EnableIRQ	2
-../Core/Src/hcsr04.c:2:6:hcsr04_init	1
+../Core/Src/hcsr04.c:6:6:hcsr04_init	1
+../Core/Src/hcsr04.c:37:6:TIM1_CC_IRQHandler	5
