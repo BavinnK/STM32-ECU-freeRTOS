@@ -1,1 +1,2 @@
-../Core/Src/hcsr04.c:2:6:hcsr04_init	4	static
+../Drivers/CMSIS/Include/core_cm4.h:1684:22:__NVIC_EnableIRQ	16	static,ignoring_inline_asm
+../Core/Src/hcsr04.c:2:6:hcsr04_init	8	static

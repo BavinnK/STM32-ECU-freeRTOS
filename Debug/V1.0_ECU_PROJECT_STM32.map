@@ -76,14 +76,16 @@ Discarded input sections
  .text          0x00000000        0x0 ./Core/Src/hcsr04.o
  .data          0x00000000        0x0 ./Core/Src/hcsr04.o
  .bss           0x00000000        0x0 ./Core/Src/hcsr04.o
+ .text.__NVIC_EnableIRQ
+                0x00000000       0x3c ./Core/Src/hcsr04.o
  .text.hcsr04_init
-                0x00000000       0x90 ./Core/Src/hcsr04.o
- .debug_info    0x00000000      0x2ee ./Core/Src/hcsr04.o
- .debug_abbrev  0x00000000       0xb6 ./Core/Src/hcsr04.o
+                0x00000000       0xd0 ./Core/Src/hcsr04.o
+ .debug_info    0x00000000      0x82e ./Core/Src/hcsr04.o
+ .debug_abbrev  0x00000000      0x13a ./Core/Src/hcsr04.o
  .debug_aranges
-                0x00000000       0x20 ./Core/Src/hcsr04.o
+                0x00000000       0x28 ./Core/Src/hcsr04.o
  .debug_rnglists
-                0x00000000       0x14 ./Core/Src/hcsr04.o
+                0x00000000       0x1a ./Core/Src/hcsr04.o
  .debug_macro   0x00000000       0xc9 ./Core/Src/hcsr04.o
  .debug_macro   0x00000000      0xad8 ./Core/Src/hcsr04.o
  .debug_macro   0x00000000       0x28 ./Core/Src/hcsr04.o
@@ -99,10 +101,10 @@ Discarded input sections
  .debug_macro   0x00000000     0x1011 ./Core/Src/hcsr04.o
  .debug_macro   0x00000000      0x11f ./Core/Src/hcsr04.o
  .debug_macro   0x00000000    0x16749 ./Core/Src/hcsr04.o
- .debug_line    0x00000000      0x51a ./Core/Src/hcsr04.o
- .debug_str     0x00000000    0x8ab25 ./Core/Src/hcsr04.o
+ .debug_line    0x00000000      0x573 ./Core/Src/hcsr04.o
+ .debug_str     0x00000000    0x8b105 ./Core/Src/hcsr04.o
  .comment       0x00000000       0x44 ./Core/Src/hcsr04.o
- .debug_frame   0x00000000       0x30 ./Core/Src/hcsr04.o
+ .debug_frame   0x00000000       0x54 ./Core/Src/hcsr04.o
  .ARM.attributes
                 0x00000000       0x34 ./Core/Src/hcsr04.o
  .group         0x00000000        0xc ./Core/Src/main.o
