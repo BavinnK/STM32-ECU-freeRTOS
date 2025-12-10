@@ -285,6 +285,54 @@ Discarded input sections
  .debug_frame   0x00000000       0x5c ./Core/Src/pwm.o
  .ARM.attributes
                 0x00000000       0x34 ./Core/Src/pwm.o
+ .group         0x00000000        0xc ./Core/Src/relay.o
+ .group         0x00000000        0xc ./Core/Src/relay.o
+ .group         0x00000000        0xc ./Core/Src/relay.o
+ .group         0x00000000        0xc ./Core/Src/relay.o
+ .group         0x00000000        0xc ./Core/Src/relay.o
+ .group         0x00000000        0xc ./Core/Src/relay.o
+ .group         0x00000000        0xc ./Core/Src/relay.o
+ .group         0x00000000        0xc ./Core/Src/relay.o
+ .group         0x00000000        0xc ./Core/Src/relay.o
+ .group         0x00000000        0xc ./Core/Src/relay.o
+ .group         0x00000000        0xc ./Core/Src/relay.o
+ .group         0x00000000        0xc ./Core/Src/relay.o
+ .group         0x00000000        0xc ./Core/Src/relay.o
+ .group         0x00000000        0xc ./Core/Src/relay.o
+ .text          0x00000000        0x0 ./Core/Src/relay.o
+ .data          0x00000000        0x0 ./Core/Src/relay.o
+ .bss           0x00000000        0x0 ./Core/Src/relay.o
+ .text.relay_init
+                0x00000000       0x44 ./Core/Src/relay.o
+ .text.relay_set_fan_speed
+                0x00000000       0x8c ./Core/Src/relay.o
+ .debug_info    0x00000000      0x347 ./Core/Src/relay.o
+ .debug_abbrev  0x00000000       0xfe ./Core/Src/relay.o
+ .debug_aranges
+                0x00000000       0x28 ./Core/Src/relay.o
+ .debug_rnglists
+                0x00000000       0x1a ./Core/Src/relay.o
+ .debug_macro   0x00000000       0xc9 ./Core/Src/relay.o
+ .debug_macro   0x00000000      0xad8 ./Core/Src/relay.o
+ .debug_macro   0x00000000       0x28 ./Core/Src/relay.o
+ .debug_macro   0x00000000       0x22 ./Core/Src/relay.o
+ .debug_macro   0x00000000       0x8e ./Core/Src/relay.o
+ .debug_macro   0x00000000       0x51 ./Core/Src/relay.o
+ .debug_macro   0x00000000      0x103 ./Core/Src/relay.o
+ .debug_macro   0x00000000       0x6a ./Core/Src/relay.o
+ .debug_macro   0x00000000      0x1df ./Core/Src/relay.o
+ .debug_macro   0x00000000       0x1c ./Core/Src/relay.o
+ .debug_macro   0x00000000       0x22 ./Core/Src/relay.o
+ .debug_macro   0x00000000       0xfb ./Core/Src/relay.o
+ .debug_macro   0x00000000     0x1011 ./Core/Src/relay.o
+ .debug_macro   0x00000000      0x11f ./Core/Src/relay.o
+ .debug_macro   0x00000000    0x16749 ./Core/Src/relay.o
+ .debug_line    0x00000000      0x521 ./Core/Src/relay.o
+ .debug_str     0x00000000    0x8ab66 ./Core/Src/relay.o
+ .comment       0x00000000       0x44 ./Core/Src/relay.o
+ .debug_frame   0x00000000       0x58 ./Core/Src/relay.o
+ .ARM.attributes
+                0x00000000       0x34 ./Core/Src/relay.o
  .group         0x00000000        0xc ./Core/Src/stm32f4xx_hal_msp.o
  .group         0x00000000        0xc ./Core/Src/stm32f4xx_hal_msp.o
  .group         0x00000000        0xc ./Core/Src/stm32f4xx_hal_msp.o
@@ -2472,6 +2520,7 @@ LOAD ./Core/Src/hcsr04.o
 LOAD ./Core/Src/main.o
 LOAD ./Core/Src/myUSART2.o
 LOAD ./Core/Src/pwm.o
+LOAD ./Core/Src/relay.o
 LOAD ./Core/Src/stm32f4xx_hal_msp.o
 LOAD ./Core/Src/stm32f4xx_it.o
 LOAD ./Core/Src/syscalls.o

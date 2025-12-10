@@ -3,6 +3,7 @@
 "./Core/Src/main.o"
 "./Core/Src/myUSART2.o"
 "./Core/Src/pwm.o"
+"./Core/Src/relay.o"
 "./Core/Src/stm32f4xx_hal_msp.o"
 "./Core/Src/stm32f4xx_it.o"
 "./Core/Src/syscalls.o"
