@@ -11,15 +11,19 @@ void relay_set_fan_speed(FanSpeed_t speed){
 
 	case FAN_OFF://all is LOW
 		GPIOB->BSRR|=(1<<26)|(1<<21)|(1<<20);
+		break;
 	case FAN_LOW://PB10 HIGH ,PB5 LOW ,PB4 LOW
 		GPIOB->BSRR|=(1<<10);
 		GPIOB->BSRR|=(1<<21)|(1<<20);
+		break;
 	case FAN_MEDIUM://BP5 HIGH, PB10 LOW, PB4 LOW
 		GPIOB->BSRR|=(1<<5);
 		GPIOB->BSRR|=(1<<26)|(1<<20);
+		break;
 	case FAN_HIGH:
 		GPIOB->BSRR|=(1<<4);
 		GPIOB->BSRR|=(1<<26)|(1<<21);
+		break;
 
 	}
 }

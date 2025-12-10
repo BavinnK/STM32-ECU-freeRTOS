@@ -305,7 +305,7 @@ Discarded input sections
  .text.relay_init
                 0x00000000       0x44 ./Core/Src/relay.o
  .text.relay_set_fan_speed
-                0x00000000       0x8c ./Core/Src/relay.o
+                0x00000000       0x94 ./Core/Src/relay.o
  .debug_info    0x00000000      0x347 ./Core/Src/relay.o
  .debug_abbrev  0x00000000       0xfe ./Core/Src/relay.o
  .debug_aranges
@@ -327,7 +327,7 @@ Discarded input sections
  .debug_macro   0x00000000     0x1011 ./Core/Src/relay.o
  .debug_macro   0x00000000      0x11f ./Core/Src/relay.o
  .debug_macro   0x00000000    0x16749 ./Core/Src/relay.o
- .debug_line    0x00000000      0x521 ./Core/Src/relay.o
+ .debug_line    0x00000000      0x52d ./Core/Src/relay.o
  .debug_str     0x00000000    0x8ab66 ./Core/Src/relay.o
  .comment       0x00000000       0x44 ./Core/Src/relay.o
  .debug_frame   0x00000000       0x58 ./Core/Src/relay.o
