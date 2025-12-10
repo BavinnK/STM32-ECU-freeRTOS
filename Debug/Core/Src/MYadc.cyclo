@@ -1,0 +1,2 @@
+../Core/Src/MYadc.c:4:6:adc_init	1
+../Core/Src/MYadc.c:18:10:adc_read	5

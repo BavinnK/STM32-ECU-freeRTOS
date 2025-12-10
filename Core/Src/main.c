@@ -22,6 +22,7 @@
 #include "hcsr04.h"
 #include "myUSART2.h"
 #include <stdio.h>
+#include "MYadc.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -69,24 +70,17 @@ int main(void) {
 
 	hcsr04_init();
 	USART2_init();
+	adc_init();
 
 	char buff[60];
 	while (1) {
-		hcsr04_trig();
-		uint32_t data_cm = hcsr04_get_pulse_width() / 58;
-		sprintf(buff, "distance in cm: %ld \n\r", data_cm);
+		uint16_t raw_lm35=adc_read(0);
+		uint16_t data_lm35_Cel=((raw_lm35*3300UL)/4095)/10;
+
+
+		sprintf(buff,"temp in C: %d\n\r",data_lm35_Cel);
 		send_str(buff);
 		delay_us(10000);
-		for (uint16_t i = 0; i < 99; i++) {
-			pwm_fan_init(1000, i);
-			delay_us(100);
-		}
-		delay_us(100);
-		for (uint16_t i = 99; i > 0; i--) {
-			pwm_fan_init(1000, i);
-			delay_us(100);
-		}
-		delay_us(100);
 
 	}
 
