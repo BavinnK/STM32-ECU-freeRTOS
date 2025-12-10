@@ -71,6 +71,7 @@ int main(void) {
 	hcsr04_init();
 	USART2_init();
 	adc_init();
+	delay_us(100);
 
 	char buff[60];
 	while (1) {
