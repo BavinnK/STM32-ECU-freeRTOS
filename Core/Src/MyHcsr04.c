@@ -60,14 +60,14 @@ void TIM1_CC_IRQHandler(void) {
 }
 //the interrupt is done
 //quick and dirty delay in us
-void delay_us(uint32_t us) {
+void delay_us_hc(uint32_t us) {
 	for (uint32_t i = 0; i < us * 12; i++) {
 		__asm__("nop");
 	}
 }
-void hcsr04_trig(void) {
+void hcsr04_trig_hc(void) {
 	GPIOA->BSRR |= (1 << 9);			//HIGH
-	delay_us(10);						//small delay
+	delay_us_hc(10);						//small delay
 	GPIOA->BSRR |= (1 << 25);		//LOW
 }
 uint32_t  hcsr04_get_pulse_width(void){

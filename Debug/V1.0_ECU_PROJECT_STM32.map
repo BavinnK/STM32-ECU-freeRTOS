@@ -128,9 +128,9 @@ Discarded input sections
                 0x00000000       0x3c ./Core/Src/MyHcsr04.o
  .text.hcsr04_init
                 0x00000000       0xdc ./Core/Src/MyHcsr04.o
- .text.delay_us
+ .text.delay_us_hc
                 0x00000000       0x36 ./Core/Src/MyHcsr04.o
- .text.hcsr04_trig
+ .text.hcsr04_trig_hc
                 0x00000000       0x2c ./Core/Src/MyHcsr04.o
  .text.hcsr04_get_pulse_width
                 0x00000000       0x18 ./Core/Src/MyHcsr04.o
@@ -3066,14 +3066,14 @@ LOAD C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_line    0x00001d1e       0x7a ./Core/Startup/startup_stm32f446retx.o
  .debug_line    0x00001d98      0x9ef ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
 
-.debug_str      0x00000000    0xc16fe
- .debug_str     0x00000000    0xc16fe ./Core/Src/MyHcsr04.o
-                              0x8b17c (size before relaxing)
- .debug_str     0x000c16fe    0xc0b71 ./Core/Src/main.o
- .debug_str     0x000c16fe    0xc0850 ./Core/Src/stm32f4xx_it.o
- .debug_str     0x000c16fe    0xc0879 ./Core/Src/system_stm32f4xx.o
- .debug_str     0x000c16fe       0x91 ./Core/Startup/startup_stm32f446retx.o
- .debug_str     0x000c16fe    0xc143e ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+.debug_str      0x00000000    0xc1704
+ .debug_str     0x00000000    0xc1704 ./Core/Src/MyHcsr04.o
+                              0x8b182 (size before relaxing)
+ .debug_str     0x000c1704    0xc0b71 ./Core/Src/main.o
+ .debug_str     0x000c1704    0xc0850 ./Core/Src/stm32f4xx_it.o
+ .debug_str     0x000c1704    0xc0879 ./Core/Src/system_stm32f4xx.o
+ .debug_str     0x000c1704       0x91 ./Core/Startup/startup_stm32f446retx.o
+ .debug_str     0x000c1704    0xc143e ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
 
 .comment        0x00000000       0x43
  .comment       0x00000000       0x43 ./Core/Src/MyHcsr04.o
