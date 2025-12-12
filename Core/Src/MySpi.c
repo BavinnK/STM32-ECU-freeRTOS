@@ -20,9 +20,9 @@ void spi_init(void){
 
 	//CONFIGURE SPI1 prepherials
 	SPI1->CR1=0;
-	SPI1->CR1|=(1<<9)|(1<<8)|(1<<6)|(2<<3)|(1<<2);//baud rate is 2Mhz and master bit is selected,we have to set SSI AND SSM to tell the hardware you are the master
+	SPI1->CR1|=(1<<9)|(1<<8)|(2<<3)|(1<<2);//baud rate is 2Mhz and master bit is selected,we have to set SSI AND SSM to tell the hardware you are the master
 	//dont care about the chip select pin im gonna handle it with my software
-	//SPI1->CR1|=(1<<6);//finally we enable the spi
+	SPI1->CR1|=(1<<6);//finally we enable the spi
 
 
 }
