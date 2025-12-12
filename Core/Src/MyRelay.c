@@ -1,4 +1,4 @@
-#include "relay.h"
+#include "MyRelay.h"
 
 void relay_init(void){
 	RCC->AHB1ENR|=(1<<1);//ENABLE GPIOB clock

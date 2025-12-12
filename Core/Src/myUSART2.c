@@ -1,4 +1,4 @@
-#include "myUSART2.h"
+#include "MyUsart2.h"
 
 void send_char(char ch) {
 	while (!(USART2->SR & (1 << 7)))

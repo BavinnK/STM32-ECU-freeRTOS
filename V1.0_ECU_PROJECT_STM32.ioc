@@ -157,4 +157,4 @@ SH.GPXTI13.0=GPIO_EXTI13
 SH.GPXTI13.ConfNb=1
 board=NUCLEO-F446RE
 boardIOC=true
-isbadioc=true
+isbadioc=false

@@ -1,0 +1,2 @@
+../Core/Src/MyPwm.c:2:6:pwm_fan_init	1
+../Core/Src/MyPwm.c:20:6:pwm_fan_duty_set	3
