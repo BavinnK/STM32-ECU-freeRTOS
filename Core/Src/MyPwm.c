@@ -1,4 +1,4 @@
-#include "MyPwm.h"
+#include <MyPwm.h>
 void pwm_fan_init(uint16_t freq_hz,uint8_t duty) {
 	const uint32_t fclk_tim = 16000000;
 	//we use timer 3 and PA6 for the output

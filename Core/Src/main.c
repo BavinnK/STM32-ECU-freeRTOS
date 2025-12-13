@@ -17,7 +17,11 @@
  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <MyHcsr04.h>
+#include <MySpi.h>
+#include <MYadc.h>
 #include "main.h"
+#include "tft_bridge.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */

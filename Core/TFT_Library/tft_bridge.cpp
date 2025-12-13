@@ -1,6 +1,6 @@
 #include "tft_bridge.h"
 #include "stm32f446xx.h"
-#include "spi.h"
+#include "MySpi.h"
 
 //pins  for clarity
 #define CS_PORT GPIOC

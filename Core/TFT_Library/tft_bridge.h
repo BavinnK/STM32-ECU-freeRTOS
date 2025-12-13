@@ -4,7 +4,7 @@
 #ifdef __cplusplus
 extern "C"{
 #endif
-#include "spi.h"
+#include "MySpi.h"
 void tft_cs_high(void);
 void tft_cs_low(void);
 void tft_dc_high(void);
