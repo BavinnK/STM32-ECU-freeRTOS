@@ -22,11 +22,7 @@ C_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-<<<<<<< HEAD
-=======
-Core/Inc \
 Core/Src/ILI9341 \
->>>>>>> 0fdbc30 (did a brain surgery on lib for th ili9341)
 Core/Src \
 Core/Startup \
 Drivers/STM32F4xx_HAL_Driver/Src \

@@ -1,2 +1,0 @@
-../Core/Inc/MyRelay.c:3:6:relay_init	4	static
-../Core/Inc/MyRelay.c:9:6:relay_set_fan_speed	16	static

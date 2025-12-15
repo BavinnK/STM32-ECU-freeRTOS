@@ -1,20 +1,12 @@
-<<<<<<< HEAD
-"./Core/Src/MYadc.o"
-"./Core/Src/MyHcsr04.o"
-"./Core/Src/MyPwm.o"
-"./Core/Src/MyRelay.o"
-"./Core/Src/MySpi.o"
-"./Core/Src/MyUsart2.o"
-=======
-"./Core/Inc/MyRelay.o"
 "./Core/Src/ILI9341/ILI9341_GFX.o"
 "./Core/Src/ILI9341/ILI9341_STM32_Driver.o"
 "./Core/Src/MyAdc.o"
 "./Core/Src/MyHcsr04.o"
 "./Core/Src/MyPwm.o"
+"./Core/Src/MyRelay.o"
 "./Core/Src/MySpi.o"
->>>>>>> 0fdbc30 (did a brain surgery on lib for th ili9341)
 "./Core/Src/main.o"
+"./Core/Src/myUSART2.o"
 "./Core/Src/stm32f4xx_hal_msp.o"
 "./Core/Src/stm32f4xx_it.o"
 "./Core/Src/syscalls.o"
@@ -34,8 +26,4 @@
 "./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.o"
 "./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o"
 "./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o"
-<<<<<<< HEAD
-=======
-"./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o"
 "./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o"
->>>>>>> 0fdbc30 (did a brain surgery on lib for th ili9341)

@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-<<<<<<< HEAD
-	<name>V1.0_ECU_PROJECT_STM32</name>
-=======
-	<name>V2.1_ECU_STM32_PROJECT</name>
->>>>>>> 0fdbc30 (did a brain surgery on lib for th ili9341)
+	<name>V2.4_ECU_STM32_PROJECT</name>
 	<comment></comment>
 	<projects>
 	</projects>
