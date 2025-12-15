@@ -138,7 +138,7 @@ int main(void) {
 
 	ILI9341_Draw_Filled_Rectangle_Coord(20, 100, 220, 150, PINK);
 	ILI9341_Draw_Hollow_Circle(250, 125, 30, GREEN);
-	ILI9341_Draw_Filled_Circle(80, 180, 40, WHITE);
+	ILI9341_Draw_Filled_Circle(80, 180, 40, PINK);
 	/* USER CODE END 2 */
 
 	/* Infinite loop */

@@ -2563,8 +2563,8 @@ int main(void) {
  800134e:	217d      	movs	r1, #125	@ 0x7d
  8001350:	20fa      	movs	r0, #250	@ 0xfa
  8001352:	f7ff f8ed 	bl	8000530 <ILI9341_Draw_Hollow_Circle>
-	ILI9341_Draw_Filled_Circle(80, 180, 40, WHITE);
- 8001356:	f64f 73ff 	movw	r3, #65535	@ 0xffff
+	ILI9341_Draw_Filled_Circle(80, 180, 40, PINK);
+ 8001356:	f64f 031f 	movw	r3, #63519	@ 0xf81f
  800135a:	2228      	movs	r2, #40	@ 0x28
  800135c:	21b4      	movs	r1, #180	@ 0xb4
  800135e:	2050      	movs	r0, #80	@ 0x50
