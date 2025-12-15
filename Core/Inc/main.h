@@ -31,6 +31,10 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+<<<<<<< HEAD
+=======
+extern SPI_HandleTypeDef hspi1;
+>>>>>>> 0fdbc30 (did a brain surgery on lib for th ili9341)
 
 /* USER CODE END Includes */
 
@@ -57,20 +61,35 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+<<<<<<< HEAD
 #define B1_Pin GPIO_PIN_13
 #define B1_GPIO_Port GPIOC
+=======
+>>>>>>> 0fdbc30 (did a brain surgery on lib for th ili9341)
 #define USART_TX_Pin GPIO_PIN_2
 #define USART_TX_GPIO_Port GPIOA
 #define USART_RX_Pin GPIO_PIN_3
 #define USART_RX_GPIO_Port GPIOA
+<<<<<<< HEAD
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
+=======
+#define LCD_CS_Pin GPIO_PIN_7
+#define LCD_CS_GPIO_Port GPIOC
+#define LCD_RST_Pin GPIO_PIN_9
+#define LCD_RST_GPIO_Port GPIOA
+>>>>>>> 0fdbc30 (did a brain surgery on lib for th ili9341)
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
+<<<<<<< HEAD
+=======
+#define LCD_DC_Pin GPIO_PIN_6
+#define LCD_DC_GPIO_Port GPIOB
+>>>>>>> 0fdbc30 (did a brain surgery on lib for th ili9341)
 
 /* USER CODE BEGIN Private defines */
 

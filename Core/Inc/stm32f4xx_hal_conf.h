@@ -62,9 +62,15 @@
 /* #define HAL_SAI_MODULE_ENABLED */
 /* #define HAL_SD_MODULE_ENABLED */
 /* #define HAL_MMC_MODULE_ENABLED */
+<<<<<<< HEAD
 /* #define HAL_SPI_MODULE_ENABLED */
 /* #define HAL_TIM_MODULE_ENABLED */
 /* #define HAL_UART_MODULE_ENABLED */
+=======
+#define HAL_SPI_MODULE_ENABLED
+/* #define HAL_TIM_MODULE_ENABLED */
+#define HAL_UART_MODULE_ENABLED
+>>>>>>> 0fdbc30 (did a brain surgery on lib for th ili9341)
 /* #define HAL_USART_MODULE_ENABLED */
 /* #define HAL_IRDA_MODULE_ENABLED */
 /* #define HAL_SMARTCARD_MODULE_ENABLED */

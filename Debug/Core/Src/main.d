@@ -1,4 +1,13 @@
+<<<<<<< HEAD
 Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/MyHcsr04.h \
+=======
+Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
+ ../Core/Inc/stm32f4xx_hal_conf.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h \
+ ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h \
+>>>>>>> 0fdbc30 (did a brain surgery on lib for th ili9341)
  ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f446xx.h \
  ../Drivers/CMSIS/Include/core_cm4.h \
  ../Drivers/CMSIS/Include/cmsis_version.h \
@@ -6,6 +15,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/MyHcsr04.h \
  ../Drivers/CMSIS/Include/cmsis_gcc.h \
  ../Drivers/CMSIS/Include/mpu_armv7.h \
  ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h \
+<<<<<<< HEAD
  ../Core/Inc/MySpi.h ../Core/Inc/MYadc.h ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
@@ -13,6 +23,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/MyHcsr04.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h \
  ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h \
  ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f446xx.h \
+=======
+>>>>>>> 0fdbc30 (did a brain surgery on lib for th ili9341)
  ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h \
@@ -26,6 +38,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/MyHcsr04.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
+<<<<<<< HEAD
  ../Core/TFT_Library/tft_bridge.h
 ../Core/Inc/MyHcsr04.h:
 ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f446xx.h:
@@ -37,6 +50,12 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/MyHcsr04.h \
 ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h:
 ../Core/Inc/MySpi.h:
 ../Core/Inc/MYadc.h:
+=======
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
+ C:/Users/pc/Desktop/STM_PROJECTS/V2.1_ECU_STM32_PROJECT/Core/Inc/ILI9341/ILI9341_STM32_Driver.h \
+ C:/Users/pc/Desktop/STM_PROJECTS/V2.1_ECU_STM32_PROJECT/Core/Inc/ILI9341/ILI9341_GFX.h
+>>>>>>> 0fdbc30 (did a brain surgery on lib for th ili9341)
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -44,6 +63,15 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/MyHcsr04.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h:
 ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:
 ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f446xx.h:
+<<<<<<< HEAD
+=======
+../Drivers/CMSIS/Include/core_cm4.h:
+../Drivers/CMSIS/Include/cmsis_version.h:
+../Drivers/CMSIS/Include/cmsis_compiler.h:
+../Drivers/CMSIS/Include/cmsis_gcc.h:
+../Drivers/CMSIS/Include/mpu_armv7.h:
+../Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h:
+>>>>>>> 0fdbc30 (did a brain surgery on lib for th ili9341)
 ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h:
@@ -57,4 +85,11 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/MyHcsr04.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h:
+<<<<<<< HEAD
 ../Core/TFT_Library/tft_bridge.h:
+=======
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
+C:/Users/pc/Desktop/STM_PROJECTS/V2.1_ECU_STM32_PROJECT/Core/Inc/ILI9341/ILI9341_STM32_Driver.h:
+C:/Users/pc/Desktop/STM_PROJECTS/V2.1_ECU_STM32_PROJECT/Core/Inc/ILI9341/ILI9341_GFX.h:
+>>>>>>> 0fdbc30 (did a brain surgery on lib for th ili9341)
