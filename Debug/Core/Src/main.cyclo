@@ -1,0 +1,9 @@
+../Core/Src/main.c:74:10:adc_to_rpm	2
+../Core/Src/main.c:81:10:pot_filter	2
+../Core/Src/main.c:93:10:rpm_from_pot	2
+../Core/Src/main.c:110:5:main	1
+../Core/Src/main.c:188:6:SystemClock_Config	3
+../Core/Src/main.c:233:13:MX_SPI1_Init	2
+../Core/Src/main.c:269:13:MX_USART2_UART_Init	2
+../Core/Src/main.c:300:13:MX_GPIO_Init	1
+../Core/Src/main.c:361:6:Error_Handler	1

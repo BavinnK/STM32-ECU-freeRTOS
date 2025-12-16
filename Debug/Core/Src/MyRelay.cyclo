@@ -1,0 +1,2 @@
+../Core/Src/MyRelay.c:3:6:relay_init	1
+../Core/Src/MyRelay.c:9:6:relay_set_fan_speed	5
