@@ -25,5 +25,7 @@ SUBDIRS := \
 Core/Src/ILI9341 \
 Core/Src \
 Core/Startup \
+Core/ThirdParty/FreeRTOS/Source \
+Core/ThirdParty/FreeRTOS/portable \
 Drivers/STM32F4xx_HAL_Driver/Src \
 

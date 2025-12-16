@@ -10,6 +10,8 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include Drivers/STM32F4xx_HAL_Driver/Src/subdir.mk
+-include Core/ThirdParty/FreeRTOS/portable/subdir.mk
+-include Core/ThirdParty/FreeRTOS/Source/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/ILI9341/subdir.mk
 -include Core/Src/subdir.mk
