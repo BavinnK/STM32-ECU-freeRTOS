@@ -13,15 +13,25 @@ void send_str(char *ptr) {
 }
 
 void USART2_init(void) {
-	//PA2 TX, PA3 RX
-	RCC->AHB1ENR |= (1 << 0);
-	RCC->APB1ENR |= (1 << 17);
-	GPIOA->MODER &= ~((1 << 7) | (1 << 6) | (1 << 5) | (1 << 4));
-	GPIOA->MODER |= ((1 << 7) | (0 << 6) | (1 << 5) | (0 << 4));//BOTH PA2 AND PA3 TO alternative mode
-	GPIOA->AFR[0] &= ~((1 << 11) | (1 << 10) | (1 << 9) | (1 << 8));//CLEARING FOR PA2
-	GPIOA->AFR[0] &= ~((1 << 15) | (1 << 14) | (1 << 13) | (1 << 12));//CLEARING FOR PA3
-	GPIOA->AFR[0] |= (1 << 14) | (1 << 13) | (1 << 12);	//SETTING THE AFR REG FOR PA3
-	GPIOA->AFR[0] |= ((1 << 10) | (1 << 9) | (1 << 8)); //SETTING THE AFR REG FOR PA2
-	USART2->BRR = (104 << 4) | (3);
-	USART2->CR1 |= (1 << 13) | (1 << 3);
+    // 1. Enable clocks
+    RCC->AHB1ENR |= (1 << 0);   // GPIOA
+    RCC->APB1ENR |= (1 << 17);  // USART2
+
+    // 2. Configure PA2 (TX) as Alternate Function
+    GPIOA->MODER &= ~(3 << (2*2)); // clear mode bits
+    GPIOA->MODER |=  (2 << (2*2)); // AF mode
+    GPIOA->OTYPER &= ~(1 << 2);    // push-pull
+    GPIOA->OSPEEDR |= (3 << (2*2)); // high speed
+    GPIOA->PUPDR &= ~(3 << (2*2));  // no pull-up/down
+
+    // 3. Set AF7 for PA2
+    GPIOA->AFR[0] &= ~(0xF << 8);   // clear
+    GPIOA->AFR[0] |=  (7 << 8);     // AF7 = USART2
+
+    // 4. Baud rate 9600 @ APB1=45MHz
+    USART2->BRR = (292 << 4) | 15;
+
+    // 5. Enable USART, TX only
+    USART2->CR1 = (1 << 13) | (1 << 3); // UE | TE
 }
+
