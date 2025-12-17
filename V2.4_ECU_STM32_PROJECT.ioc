@@ -190,4 +190,4 @@ VP_SYS_VS_Systick.Mode=SysTick
 VP_SYS_VS_Systick.Signal=SYS_VS_Systick
 board=NUCLEO-F446RE
 boardIOC=true
-isbadioc=false
+isbadioc=true
