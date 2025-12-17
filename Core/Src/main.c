@@ -32,6 +32,16 @@
 //#include "MyUsart2.h"
 #include "Myhcsr04.h"
 #include "stdio.h"
+#include "queue.h"
+
+
+typedef struct {
+    uint16_t temperature;
+    uint16_t throttle;
+} SensorData_t;
+
+//the handle for the queue
+QueueHandle_t xSensorDataQueue;
 
 /* USER CODE END Includes */
 
@@ -112,21 +122,17 @@ int main(void) {
 //	char buff1[50];
 //	sprintf(buff1, "Tasks created successfully. Starting\r\n");
 //	HAL_UART_Transmit(&huart2, (uint8_t*) buff1, 52, HAL_MAX_DELAY);
+	xSensorDataQueue=xQueueCreate(5,SensorData_t);
 
-	 xTaskCreate(vTaskHeartbeat,
-	              "Heartbeat",
-	              128,
-	              NULL,
-	              1,
-	              NULL);
+	if(xSensorDataQueue==null){
+		//if the queue failed to create we will hang here until the watchdog notices and reboots the system
+		for(;;);
+	}
 
-	  // Create the UART Spam task.
-	  xTaskCreate(vTaskUARTSpam,
-	              "UARTSpam",
-	              256, // Slightly larger stack for sprintf
-	              NULL,
-	              1,
-	              NULL);
+	 xTaskCreate(xTaskReadADC, "ADCdata", 1024, null, 4, null);
+	 xTaskCreate(xTaskHcsr04, "HCSR04data", 512, null, 2, null);
+	 xTaskCreate(xTaskdrawScreen, "drawData", 1024, null, 1, null);
+	 xTaskCreate(xTaskFanSpeed, "fanSpeed", 512, null, 4, null);
 
 	vTaskStartScheduler();
 	// Start the ADC DMA transfer. This is fire-and-forget.
