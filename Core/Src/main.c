@@ -18,12 +18,14 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stm32f4xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "stm32f4xx_hal_adc.h"
+#include "stm32f4xx_hal_dma.h"
+#include "stm32f4xx_hal_gpio.h"
 //#include "ILI9341_GFX.h"
 //#include "ILI9341_STM32_Driver.h"
 #include "MyAdc.h"
@@ -34,10 +36,9 @@
 #include "stdio.h"
 #include "queue.h"
 
-
 typedef struct {
-    uint16_t raw_temp;
-    uint16_t raw_throttle;
+	uint16_t raw_temp;
+	uint16_t raw_throttle;
 } ADCData_t;
 
 //queue to send raw ADC data to the logic task
@@ -61,20 +62,22 @@ QueueHandle_t xADCDataQueue;
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+ADC_HandleTypeDef hadc1;
+DMA_HandleTypeDef hdma_adc1;
+
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+volatile uint16_t adc_buffer[2];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_ADC1_Init(void);
+void xTaskReadADC(void *pvParameters);
 /* USER CODE BEGIN PFP */
-
-void vTaskHeartbeat(void *pvParameters);
-void vTaskUARTSpam(void *pvParameters);
 
 /* USER CODE END PFP */
 
@@ -116,7 +119,12 @@ int main(void) {
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
 	MX_USART2_UART_Init();
+	MX_ADC1_Init();
 	/* USER CODE BEGIN 2 */
+	//ADC DMA activated
+	//MX_ADC1_Init();
+	//adc_init();
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adc_buffer, 2);
 
 	NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
 //	char buff1[50];
@@ -125,11 +133,12 @@ int main(void) {
 	xADCDataQueue = xQueueCreate(1, sizeof(ADCData_t));
 
 	if (xADCDataQueue == NULL) {
-	    // FATAL: Queue creation failed
-	    while(1);
+		//FATAL queue creation failed
+		while (1)
+			;
+
 	}
-
-
+	xTaskCreate(xTaskReadADC, "ADCdata", 1024, NULL, 4, NULL);
 
 	vTaskStartScheduler();
 	// Start the ADC DMA transfer. This is fire-and-forget.
@@ -194,33 +203,99 @@ void SystemClock_Config(void) {
 }
 
 /**
+ * @brief ADC1 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_ADC1_Init(void) {
+	ADC_ChannelConfTypeDef sConfig = { 0 };
+
+// 1. Enable Clocks
+	__HAL_RCC_ADC1_CLK_ENABLE();
+	__HAL_RCC_DMA2_CLK_ENABLE();
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+
+// 2. Configure GPIO pins PA0 and PA1 as Analog
+	GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+	GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1;
+	GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+// 3. Configure DMA
+	hdma_adc1.Instance = DMA2_Stream0;
+	hdma_adc1.Init.Channel = DMA_CHANNEL_0;
+	hdma_adc1.Init.Direction = DMA_PERIPH_TO_MEMORY;
+	hdma_adc1.Init.PeriphInc = DMA_PINC_DISABLE;
+	hdma_adc1.Init.MemInc = DMA_MINC_ENABLE;
+	hdma_adc1.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+	hdma_adc1.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+	hdma_adc1.Init.Mode = DMA_CIRCULAR;
+	hdma_adc1.Init.Priority = DMA_PRIORITY_HIGH;
+	hdma_adc1.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+	HAL_DMA_Init(&hdma_adc1);
+
+// Link the DMA handle to the ADC handle
+	__HAL_LINKDMA(&hadc1, DMA_Handle, hdma_adc1);
+
+// 4. Configure the ADC core
+	hadc1.Instance = ADC1;
+	hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+	hadc1.Init.Resolution = ADC_RESOLUTION_12B;
+	hadc1.Init.ScanConvMode = ENABLE; // Scan multiple channels
+	hadc1.Init.ContinuousConvMode = ENABLE; // Convert continuously
+	hadc1.Init.DiscontinuousConvMode = DISABLE;
+	hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+	hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+	hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+	hadc1.Init.NbrOfConversion = 2; // We are converting 2 channels
+	hadc1.Init.DMAContinuousRequests = ENABLE;
+	hadc1.Init.EOCSelection = ADC_EOC_SEQ_CONV;
+	HAL_ADC_Init(&hadc1);
+
+// 5. Configure the ADC channels for the scan sequence
+// Channel 0 - Temp Sensor
+	sConfig.Channel = ADC_CHANNEL_0;
+	sConfig.Rank = 1; // First in the sequence
+	sConfig.SamplingTime = ADC_SAMPLETIME_84CYCLES;
+	HAL_ADC_ConfigChannel(&hadc1, &sConfig);
+
+// Channel 1 - Throttle Potentiometer
+	sConfig.Channel = ADC_CHANNEL_1;
+	sConfig.Rank = 2; // Second in the sequence
+	HAL_ADC_ConfigChannel(&hadc1, &sConfig);
+}
+
+
+
+/**
  * @brief USART2 Initialization Function
  * @param None
  * @retval None
  */
 static void MX_USART2_UART_Init(void) {
 
-	/* USER CODE BEGIN USART2_Init 0 */
+/* USER CODE BEGIN USART2_Init 0 */
 
-	/* USER CODE END USART2_Init 0 */
+/* USER CODE END USART2_Init 0 */
 
-	/* USER CODE BEGIN USART2_Init 1 */
+/* USER CODE BEGIN USART2_Init 1 */
 
-	/* USER CODE END USART2_Init 1 */
-	huart2.Instance = USART2;
-	huart2.Init.BaudRate = 115200;
-	huart2.Init.WordLength = UART_WORDLENGTH_8B;
-	huart2.Init.StopBits = UART_STOPBITS_1;
-	huart2.Init.Parity = UART_PARITY_NONE;
-	huart2.Init.Mode = UART_MODE_TX_RX;
-	huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-	huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-	if (HAL_UART_Init(&huart2) != HAL_OK) {
-		Error_Handler();
-	}
-	/* USER CODE BEGIN USART2_Init 2 */
+/* USER CODE END USART2_Init 1 */
+huart2.Instance = USART2;
+huart2.Init.BaudRate = 115200;
+huart2.Init.WordLength = UART_WORDLENGTH_8B;
+huart2.Init.StopBits = UART_STOPBITS_1;
+huart2.Init.Parity = UART_PARITY_NONE;
+huart2.Init.Mode = UART_MODE_TX_RX;
+huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+if (HAL_UART_Init(&huart2) != HAL_OK) {
+	Error_Handler();
+}
+/* USER CODE BEGIN USART2_Init 2 */
 
-	/* USER CODE END USART2_Init 2 */
+/* USER CODE END USART2_Init 2 */
 
 }
 
@@ -230,63 +305,84 @@ static void MX_USART2_UART_Init(void) {
  * @retval None
  */
 static void MX_GPIO_Init(void) {
-	GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-	/* USER CODE BEGIN MX_GPIO_Init_1 */
+GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+/* USER CODE BEGIN MX_GPIO_Init_1 */
 
-	/* USER CODE END MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
-	/* GPIO Ports Clock Enable */
-	__HAL_RCC_GPIOC_CLK_ENABLE();
-	__HAL_RCC_GPIOH_CLK_ENABLE();
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-	__HAL_RCC_GPIOB_CLK_ENABLE();
+/* GPIO Ports Clock Enable */
+__HAL_RCC_GPIOC_CLK_ENABLE();
+__HAL_RCC_GPIOH_CLK_ENABLE();
+__HAL_RCC_GPIOA_CLK_ENABLE();
+__HAL_RCC_GPIOB_CLK_ENABLE();
 
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5 | LCD_RST_Pin, GPIO_PIN_RESET);
+/*Configure GPIO pin Output Level */
+HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5 | LCD_RST_Pin, GPIO_PIN_RESET);
 
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_RESET);
+/*Configure GPIO pin Output Level */
+HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_RESET);
 
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_RESET);
+/*Configure GPIO pin Output Level */
+HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_RESET);
 
-	/*Configure GPIO pin : B1_Pin */
-	GPIO_InitStruct.Pin = B1_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+/*Configure GPIO pin : B1_Pin */
+GPIO_InitStruct.Pin = B1_Pin;
+GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+GPIO_InitStruct.Pull = GPIO_NOPULL;
+HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-	/*Configure GPIO pins : PA5 LCD_RST_Pin */
-	GPIO_InitStruct.Pin = GPIO_PIN_5 | LCD_RST_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+/*Configure GPIO pins : PA5 LCD_RST_Pin */
+GPIO_InitStruct.Pin = GPIO_PIN_5 | LCD_RST_Pin;
+GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+GPIO_InitStruct.Pull = GPIO_NOPULL;
+GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-	/*Configure GPIO pin : LCD_CS_Pin */
-	GPIO_InitStruct.Pin = LCD_CS_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(LCD_CS_GPIO_Port, &GPIO_InitStruct);
+/*Configure GPIO pin : LCD_CS_Pin */
+GPIO_InitStruct.Pin = LCD_CS_Pin;
+GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+GPIO_InitStruct.Pull = GPIO_NOPULL;
+GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+HAL_GPIO_Init(LCD_CS_GPIO_Port, &GPIO_InitStruct);
 
-	/*Configure GPIO pin : LCD_DC_Pin */
-	GPIO_InitStruct.Pin = LCD_DC_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(LCD_DC_GPIO_Port, &GPIO_InitStruct);
+/*Configure GPIO pin : LCD_DC_Pin */
+GPIO_InitStruct.Pin = LCD_DC_Pin;
+GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+GPIO_InitStruct.Pull = GPIO_NOPULL;
+GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+HAL_GPIO_Init(LCD_DC_GPIO_Port, &GPIO_InitStruct);
+}
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE BEGIN 4 */
 
-	/* USER CODE BEGIN MX_GPIO_Init_2 */
+// ... your RTOS task functions will also go here ...
+/**
+  * @brief  xTaskReadADC: Periodically reads the DMA buffer and sends raw sensor data to a queue.
+  */
+void xTaskReadADC(void *pvParameters)
+{
+    ADCData_t adc_data;
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    const TickType_t xFrequency = pdMS_TO_TICKS(20); // Run at 50Hz
 
-	/* USER CODE END MX_GPIO_Init_2 */
+    for(;;)
+    {
+        // Wait for the next cycle.
+        vTaskDelayUntil(&xLastWakeTime, xFrequency);
+
+        // Get the latest data from the DMA buffer
+        adc_data.raw_temp = adc_buffer[0];
+        adc_data.raw_throttle = adc_buffer[1];
+
+        // Send the packaged data to the ADC queue, overwriting if full.
+        xQueueOverwrite(xADCDataQueue, &adc_data);
+    }
 }
 
-/* USER CODE BEGIN 4 */
-//RTOS TASKS
 
-
-
+/**
+  * @brief  xTaskECULogic: (Test Stub) Waits for ADC data and prints it via UART.
+  */
 /* USER CODE END 4 */
 
 /**
