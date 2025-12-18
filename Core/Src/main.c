@@ -36,12 +36,12 @@
 
 
 typedef struct {
-    uint16_t temperature;
-    uint16_t throttle;
-} SensorData_t;
+    uint16_t raw_temp;
+    uint16_t raw_throttle;
+} ADCData_t;
 
-//the handle for the queue
-QueueHandle_t xSensorDataQueue;
+//queue to send raw ADC data to the logic task
+QueueHandle_t xADCDataQueue;
 
 /* USER CODE END Includes */
 
@@ -122,17 +122,14 @@ int main(void) {
 //	char buff1[50];
 //	sprintf(buff1, "Tasks created successfully. Starting\r\n");
 //	HAL_UART_Transmit(&huart2, (uint8_t*) buff1, 52, HAL_MAX_DELAY);
-	xSensorDataQueue=xQueueCreate(5,SensorData_t);
+	xADCDataQueue = xQueueCreate(1, sizeof(ADCData_t));
 
-	if(xSensorDataQueue==null){
-		//if the queue failed to create we will hang here until the watchdog notices and reboots the system
-		for(;;);
+	if (xADCDataQueue == NULL) {
+	    // FATAL: Queue creation failed
+	    while(1);
 	}
 
-	 xTaskCreate(xTaskReadADC, "ADCdata", 1024, null, 4, null);
-	 xTaskCreate(xTaskHcsr04, "HCSR04data", 512, null, 2, null);
-	 xTaskCreate(xTaskdrawScreen, "drawData", 1024, null, 1, null);
-	 xTaskCreate(xTaskFanSpeed, "fanSpeed", 512, null, 4, null);
+
 
 	vTaskStartScheduler();
 	// Start the ADC DMA transfer. This is fire-and-forget.
@@ -287,26 +284,8 @@ static void MX_GPIO_Init(void) {
 
 /* USER CODE BEGIN 4 */
 //RTOS TASKS
-void vTaskHeartbeat(void *pvParameters) {
-	// This task just blinks the user LED (PA5) forever.
-	for (;;) {
-		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-		vTaskDelay(pdMS_TO_TICKS(500)); // RTOS-safe delay for 500ms
-	}
-}
 
-void vTaskUARTSpam(void *pvParameters) {
-	char msg[64];
-	uint32_t spam_counter = 0;
 
-	// This task just prints to UART forever.
-	for (;;) {
-		uint16_t n = sprintf(msg, "ECU RTOS is ALIVE. Cycle: %lu \r\n",
-				spam_counter++);
-		HAL_UART_Transmit(&huart2, (uint8_t*) msg, n, HAL_MAX_DELAY);
-		vTaskDelay(pdMS_TO_TICKS(2000)); // RTOS-safe delay for 2 seconds
-	}
-}
 
 /* USER CODE END 4 */
 
