@@ -35,14 +35,22 @@
 #include "Myhcsr04.h"
 #include "stdio.h"
 #include "queue.h"
+#include <string.h>
 
 typedef struct {
 	uint16_t raw_temp;
 	uint16_t raw_throttle;
 } ADCData_t;
-
+//processed data
+typedef struct {
+	int temperature_c;
+	int throttle_percent;
+	// int fuel_percent;
+	FanSpeed_t fan_cmd;
+} ECUData_t;
 //queue to send raw ADC data to the logic task
 QueueHandle_t xADCDataQueue;
+QueueHandle_t xECUDataQueue;
 
 /* USER CODE END Includes */
 
@@ -77,6 +85,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_ADC1_Init(void);
 void xTaskReadADC(void *pvParameters);
+void xTaskECULogic(void *pvParameters);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -120,6 +129,7 @@ int main(void) {
 	MX_GPIO_Init();
 	MX_USART2_UART_Init();
 	MX_ADC1_Init();
+	relay_init();
 	/* USER CODE BEGIN 2 */
 	//ADC DMA activated
 	//MX_ADC1_Init();
@@ -131,14 +141,15 @@ int main(void) {
 //	sprintf(buff1, "Tasks created successfully. Starting\r\n");
 //	HAL_UART_Transmit(&huart2, (uint8_t*) buff1, 52, HAL_MAX_DELAY);
 	xADCDataQueue = xQueueCreate(1, sizeof(ADCData_t));
+	xECUDataQueue = xQueueCreate(2, sizeof(ECUData_t));
 
-	if (xADCDataQueue == NULL) {
+	if (xADCDataQueue == NULL || xECUDataQueue == NULL) {
 		//FATAL queue creation failed
-		while (1)
-			;
+		Error_Handler();
 
 	}
 	xTaskCreate(xTaskReadADC, "ADCdata", 1024, NULL, 4, NULL);
+	xTaskCreate(xTaskECULogic, "ECU_print", 1024, NULL, 3, NULL);
 
 	vTaskStartScheduler();
 	// Start the ADC DMA transfer. This is fire-and-forget.
@@ -152,7 +163,7 @@ int main(void) {
 
 	while (1) {
 		/* USER CODE END WHILE */
-
+		//NOTHING HERE
 		/* USER CODE BEGIN 3 */
 	}
 	/* USER CODE END 3 */
@@ -266,8 +277,6 @@ static void MX_ADC1_Init(void) {
 	HAL_ADC_ConfigChannel(&hadc1, &sConfig);
 }
 
-
-
 /**
  * @brief USART2 Initialization Function
  * @param None
@@ -275,27 +284,27 @@ static void MX_ADC1_Init(void) {
  */
 static void MX_USART2_UART_Init(void) {
 
-/* USER CODE BEGIN USART2_Init 0 */
+	/* USER CODE BEGIN USART2_Init 0 */
 
-/* USER CODE END USART2_Init 0 */
+	/* USER CODE END USART2_Init 0 */
 
-/* USER CODE BEGIN USART2_Init 1 */
+	/* USER CODE BEGIN USART2_Init 1 */
 
-/* USER CODE END USART2_Init 1 */
-huart2.Instance = USART2;
-huart2.Init.BaudRate = 115200;
-huart2.Init.WordLength = UART_WORDLENGTH_8B;
-huart2.Init.StopBits = UART_STOPBITS_1;
-huart2.Init.Parity = UART_PARITY_NONE;
-huart2.Init.Mode = UART_MODE_TX_RX;
-huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-if (HAL_UART_Init(&huart2) != HAL_OK) {
-	Error_Handler();
-}
-/* USER CODE BEGIN USART2_Init 2 */
+	/* USER CODE END USART2_Init 1 */
+	huart2.Instance = USART2;
+	huart2.Init.BaudRate = 115200;
+	huart2.Init.WordLength = UART_WORDLENGTH_8B;
+	huart2.Init.StopBits = UART_STOPBITS_1;
+	huart2.Init.Parity = UART_PARITY_NONE;
+	huart2.Init.Mode = UART_MODE_TX_RX;
+	huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+	if (HAL_UART_Init(&huart2) != HAL_OK) {
+		Error_Handler();
+	}
+	/* USER CODE BEGIN USART2_Init 2 */
 
-/* USER CODE END USART2_Init 2 */
+	/* USER CODE END USART2_Init 2 */
 
 }
 
@@ -305,84 +314,118 @@ if (HAL_UART_Init(&huart2) != HAL_OK) {
  * @retval None
  */
 static void MX_GPIO_Init(void) {
-GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-/* USER CODE BEGIN MX_GPIO_Init_1 */
+	GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+	/* USER CODE BEGIN MX_GPIO_Init_1 */
 
-/* USER CODE END MX_GPIO_Init_1 */
+	/* USER CODE END MX_GPIO_Init_1 */
 
-/* GPIO Ports Clock Enable */
-__HAL_RCC_GPIOC_CLK_ENABLE();
-__HAL_RCC_GPIOH_CLK_ENABLE();
-__HAL_RCC_GPIOA_CLK_ENABLE();
-__HAL_RCC_GPIOB_CLK_ENABLE();
+	/* GPIO Ports Clock Enable */
+	__HAL_RCC_GPIOC_CLK_ENABLE();
+	__HAL_RCC_GPIOH_CLK_ENABLE();
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_GPIOB_CLK_ENABLE();
 
-/*Configure GPIO pin Output Level */
-HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5 | LCD_RST_Pin, GPIO_PIN_RESET);
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5 | LCD_RST_Pin, GPIO_PIN_RESET);
 
-/*Configure GPIO pin Output Level */
-HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_RESET);
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_RESET);
 
-/*Configure GPIO pin Output Level */
-HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_RESET);
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_RESET);
 
-/*Configure GPIO pin : B1_Pin */
-GPIO_InitStruct.Pin = B1_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+	/*Configure GPIO pin : B1_Pin */
+	GPIO_InitStruct.Pin = B1_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-/*Configure GPIO pins : PA5 LCD_RST_Pin */
-GPIO_InitStruct.Pin = GPIO_PIN_5 | LCD_RST_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+	/*Configure GPIO pins : PA5 LCD_RST_Pin */
+	GPIO_InitStruct.Pin = GPIO_PIN_5 | LCD_RST_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-/*Configure GPIO pin : LCD_CS_Pin */
-GPIO_InitStruct.Pin = LCD_CS_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-HAL_GPIO_Init(LCD_CS_GPIO_Port, &GPIO_InitStruct);
+	/*Configure GPIO pin : LCD_CS_Pin */
+	GPIO_InitStruct.Pin = LCD_CS_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(LCD_CS_GPIO_Port, &GPIO_InitStruct);
 
-/*Configure GPIO pin : LCD_DC_Pin */
-GPIO_InitStruct.Pin = LCD_DC_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-HAL_GPIO_Init(LCD_DC_GPIO_Port, &GPIO_InitStruct);
+	/*Configure GPIO pin : LCD_DC_Pin */
+	GPIO_InitStruct.Pin = LCD_DC_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(LCD_DC_GPIO_Port, &GPIO_InitStruct);
 }
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE BEGIN 4 */
 
 // ... your RTOS task functions will also go here ...
 /**
-  * @brief  xTaskReadADC: Periodically reads the DMA buffer and sends raw sensor data to a queue.
-  */
-void xTaskReadADC(void *pvParameters)
-{
-    ADCData_t adc_data;
-    TickType_t xLastWakeTime = xTaskGetTickCount();
-    const TickType_t xFrequency = pdMS_TO_TICKS(20); // Run at 50Hz
+ * @brief  xTaskReadADC: Periodically reads the DMA buffer and sends raw sensor data to a queue.
+ */
+void xTaskReadADC(void *pvParameters) {
+	ADCData_t adc_data;
+	TickType_t xLastWakeTime = xTaskGetTickCount();
+	const TickType_t xFrequency = pdMS_TO_TICKS(20); // Run at 50Hz
 
-    for(;;)
-    {
-        // Wait for the next cycle.
-        vTaskDelayUntil(&xLastWakeTime, xFrequency);
+	for (;;) {
+		// Wait for the next cycle.
+		vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
-        // Get the latest data from the DMA buffer
-        adc_data.raw_temp = adc_buffer[0];
-        adc_data.raw_throttle = adc_buffer[1];
+		// Get the latest data from the DMA buffer
+		adc_data.raw_temp = adc_buffer[0];
+		adc_data.raw_throttle = adc_buffer[1];
 
-        // Send the packaged data to the ADC queue, overwriting if full.
-        xQueueOverwrite(xADCDataQueue, &adc_data);
-    }
+		// Send the packaged data to the ADC queue, overwriting if full.
+		xQueueOverwrite(xADCDataQueue, &adc_data);
+	}
 }
 
-
 /**
-  * @brief  xTaskECULogic: (Test Stub) Waits for ADC data and prints it via UART.
-  */
+ * @brief  xTaskECULogic: (Test Stub) Waits for ADC data and prints it via UART.
+ */
+void xTaskECULogic(void *pvParameters) {
+	ADCData_t received_adc;
+	ECUData_t current_state;
+	char buffer[100];
+
+	for (;;) {
+		// Wait forever until a message arrives in the ADC queue.
+		if (xQueueReceive(xADCDataQueue, &received_adc, portMAX_DELAY) == pdPASS) {
+
+			current_state.temperature_c = (received_adc.raw_temp * 81) / 1000;
+
+			current_state.throttle_percent = (received_adc.raw_throttle * 100)
+					/ 4095;
+
+			if (current_state.temperature_c <= 10) {
+				current_state.fan_cmd = FAN_SPEED_OFF;
+			} else if (current_state.temperature_c > 10
+					&& current_state.temperature_c <= 20) {
+				current_state.fan_cmd = FAN_SPEED_LOW;
+			} else if (current_state.temperature_c > 20
+					&& current_state.temperature_c <= 30) {
+				current_state.fan_cmd = FAN_SPEED_MEDIUM;
+			} else if (current_state.temperature_c > 30) {
+				current_state.fan_cmd = FAN_SPEED_HIGH;
+			}
+			//xQueueOverwrite(xECUDataQueue, &current_state);
+			sprintf(buffer, "Temp: %dC | Thr: %d%% | Fan Cmd: %d\r\n",
+					current_state.temperature_c, current_state.throttle_percent,
+					current_state.fan_cmd);
+			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),
+					HAL_MAX_DELAY);
+			//vTaskDelay(200);
+
+
+		}
+	}
+}
 /* USER CODE END 4 */
 
 /**
