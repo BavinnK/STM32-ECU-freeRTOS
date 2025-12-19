@@ -43,14 +43,21 @@ typedef struct {
 } ADCData_t;
 //processed data
 typedef struct {
-	int temperature_c;
-	int throttle_percent;
+	uint16_t temperature_c;
+	uint16_t throttle_percent;
 	// int fuel_percent;
 	FanSpeed_t fan_cmd;
 } ECUData_t;
+typedef struct{
+	uint16_t throttle_percent;
+	FanSpeed_t fan_cmd;
+
+
+}ECUFANSpeed_t;
 //queue to send raw ADC data to the logic task
 QueueHandle_t xADCDataQueue;
 QueueHandle_t xECUDataQueue;
+QueueHandle_t xFanCommandQueue;
 
 /* USER CODE END Includes */
 
@@ -86,6 +93,7 @@ static void MX_USART2_UART_Init(void);
 static void MX_ADC1_Init(void);
 void xTaskReadADC(void *pvParameters);
 void xTaskECULogic(void *pvParameters);
+void xTaskFanSpeed(void *pvParameters);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -142,6 +150,7 @@ int main(void) {
 //	HAL_UART_Transmit(&huart2, (uint8_t*) buff1, 52, HAL_MAX_DELAY);
 	xADCDataQueue = xQueueCreate(1, sizeof(ADCData_t));
 	xECUDataQueue = xQueueCreate(2, sizeof(ECUData_t));
+	xFanCommandQueue=xQueueCreate(1,sizeof(ECUFANSpeed_t));
 
 	if (xADCDataQueue == NULL || xECUDataQueue == NULL) {
 		//FATAL queue creation failed
@@ -150,6 +159,7 @@ int main(void) {
 	}
 	xTaskCreate(xTaskReadADC, "ADCdata", 1024, NULL, 4, NULL);
 	xTaskCreate(xTaskECULogic, "ECU_print", 1024, NULL, 3, NULL);
+	xTaskCreate(xTaskFanSpeed, "FanSpeed", 512, NULL, 4, NULL);
 
 	vTaskStartScheduler();
 	// Start the ADC DMA transfer. This is fire-and-forget.
@@ -392,6 +402,7 @@ void xTaskReadADC(void *pvParameters) {
 void xTaskECULogic(void *pvParameters) {
 	ADCData_t received_adc;
 	ECUData_t current_state;
+	ECUFANSpeed_t current_fan_state;
 	char buffer[100];
 
 	for (;;) {
@@ -399,22 +410,26 @@ void xTaskECULogic(void *pvParameters) {
 		if (xQueueReceive(xADCDataQueue, &received_adc, portMAX_DELAY) == pdPASS) {
 
 			current_state.temperature_c = (received_adc.raw_temp * 81) / 1000;
+			uint16_t data= (received_adc.raw_throttle * 100)/ 4095;
+			current_state.throttle_percent = data;
+			current_fan_state.throttle_percent=data;
 
-			current_state.throttle_percent = (received_adc.raw_throttle * 100)
-					/ 4095;
 
-			if (current_state.temperature_c <= 10) {
-				current_state.fan_cmd = FAN_SPEED_OFF;
-			} else if (current_state.temperature_c > 10
-					&& current_state.temperature_c <= 20) {
-				current_state.fan_cmd = FAN_SPEED_LOW;
-			} else if (current_state.temperature_c > 20
-					&& current_state.temperature_c <= 30) {
-				current_state.fan_cmd = FAN_SPEED_MEDIUM;
-			} else if (current_state.temperature_c > 30) {
+			if (current_state.temperature_c > 40 || current_state.throttle_percent>=80) {
 				current_state.fan_cmd = FAN_SPEED_HIGH;
+				current_fan_state.fan_cmd=FAN_SPEED_HIGH;
+			} else if (current_state.temperature_c >=25 && current_state.temperature_c < 40) {
+				current_state.fan_cmd = FAN_SPEED_MEDIUM;
+				current_fan_state.fan_cmd= FAN_SPEED_MEDIUM;
+			} else if (current_state.temperature_c >=10 && current_state.temperature_c < 25) {
+				current_state.fan_cmd = FAN_SPEED_LOW;
+				current_fan_state.fan_cmd=FAN_SPEED_LOW;
+			} else if (current_state.temperature_c < 10) {
+				current_state.fan_cmd = FAN_SPEED_OFF;
+				current_fan_state.fan_cmd=FAN_SPEED_OFF;
 			}
-			//xQueueOverwrite(xECUDataQueue, &current_state);
+			xQueueOverwrite(xECUDataQueue, &current_state);
+			xQueueOverwrite(xFanCommandQueue,&current_fan_state);
 			sprintf(buffer, "Temp: %dC | Thr: %d%% | Fan Cmd: %d\r\n",
 					current_state.temperature_c, current_state.throttle_percent,
 					current_state.fan_cmd);
@@ -426,6 +441,16 @@ void xTaskECULogic(void *pvParameters) {
 		}
 	}
 }
+void xTaskFanSpeed(void *pvParameters){
+	ECUFANSpeed_t received_ecu_data;
+
+	for(;;){
+		if(xQueueReceive(xFanCommandQueue, &received_ecu_data, portMAX_DELAY)==pdPASS){
+			relay_set_fan_speed(received_ecu_data.fan_cmd);
+			}
+		}
+	}
+
 /* USER CODE END 4 */
 
 /**
