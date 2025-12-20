@@ -80,5 +80,5 @@ void hcsr04_trig_hc(void) {
 	GPIOA->BSRR |= (1 << 25);		//LOW
 }
 uint32_t  hcsr04_get_pulse_width(void){
-	return diffrence;
+	return diffrence/58;
 }
