@@ -23,6 +23,9 @@
 /* USER CODE BEGIN Includes */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "semphr.h"
+#include "queue.h"
+
 #include "stm32f4xx_hal_adc.h"
 #include "stm32f4xx_hal_dma.h"
 #include "stm32f4xx_hal_gpio.h"
@@ -34,7 +37,6 @@
 //#include "MyUsart2.h"
 #include "Myhcsr04.h"
 #include "stdio.h"
-#include "queue.h"
 #include <string.h>
 
 typedef struct {
@@ -58,6 +60,9 @@ typedef struct{
 QueueHandle_t xADCDataQueue;
 QueueHandle_t xECUDataQueue;
 QueueHandle_t xFanCommandQueue;
+QueueHandle_t xFuelDataQueue;
+SemaphoreHandle_t xHcsr04Semaphore;
+
 
 /* USER CODE END Includes */
 
@@ -94,6 +99,7 @@ static void MX_ADC1_Init(void);
 void xTaskReadADC(void *pvParameters);
 void xTaskECULogic(void *pvParameters);
 void xTaskFanSpeed(void *pvParameters);
+void xTaskHcsr04(void *pvParameters);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -138,6 +144,7 @@ int main(void) {
 	MX_USART2_UART_Init();
 	MX_ADC1_Init();
 	relay_init();
+	hcsr04_init();
 	/* USER CODE BEGIN 2 */
 	//ADC DMA activated
 	//MX_ADC1_Init();
@@ -148,11 +155,13 @@ int main(void) {
 //	char buff1[50];
 //	sprintf(buff1, "Tasks created successfully. Starting\r\n");
 //	HAL_UART_Transmit(&huart2, (uint8_t*) buff1, 52, HAL_MAX_DELAY);
-	xADCDataQueue = xQueueCreate(1, sizeof(ADCData_t));
-	xECUDataQueue = xQueueCreate(2, sizeof(ECUData_t));
-	xFanCommandQueue=xQueueCreate(1,sizeof(ECUFANSpeed_t));
+	xHcsr04Semaphore = xSemaphoreCreateBinary();
+	xADCDataQueue = 	xQueueCreate(1, sizeof(ADCData_t));
+	xECUDataQueue = 	xQueueCreate(2, sizeof(ECUData_t));
+	xFanCommandQueue=	xQueueCreate(1,sizeof(ECUFANSpeed_t));
+	xFuelDataQueue = 	xQueueCreate(1,sizeof(int));
 
-	if (xADCDataQueue == NULL || xECUDataQueue == NULL) {
+	if (xADCDataQueue == NULL || xECUDataQueue == NULL || xFanCommandQueue == NULL || xFuelDataQueue == NULL || xHcsr04Semaphore == NULL) {
 		//FATAL queue creation failed
 		Error_Handler();
 
@@ -160,6 +169,7 @@ int main(void) {
 	xTaskCreate(xTaskReadADC, "ADCdata", 1024, NULL, 4, NULL);
 	xTaskCreate(xTaskECULogic, "ECU_print", 1024, NULL, 3, NULL);
 	xTaskCreate(xTaskFanSpeed, "FanSpeed", 512, NULL, 4, NULL);
+	xTaskCreate(xTaskHcsr04, "fuelData", 256, NULL, 2, NULL);
 
 	vTaskStartScheduler();
 	// Start the ADC DMA transfer. This is fire-and-forget.
@@ -418,13 +428,16 @@ void xTaskECULogic(void *pvParameters) {
 			if (current_state.temperature_c >= 60 || current_state.throttle_percent>=80) {
 				current_state.fan_cmd = FAN_SPEED_HIGH;
 				current_fan_state.fan_cmd=FAN_SPEED_HIGH;
-			} else if (current_state.temperature_c >=40 && current_state.temperature_c < 60) {
+			}
+			else if (current_state.temperature_c >=40 && current_state.temperature_c < 60) {
 				current_state.fan_cmd = FAN_SPEED_MEDIUM;
 				current_fan_state.fan_cmd= FAN_SPEED_MEDIUM;
-			} else if (current_state.temperature_c >=5 && current_state.temperature_c < 40) {
+			}
+			else if (current_state.temperature_c >=5 && current_state.temperature_c < 40) {
 				current_state.fan_cmd = FAN_SPEED_LOW;
 				current_fan_state.fan_cmd=FAN_SPEED_LOW;
-			} else if (current_state.temperature_c < 5) {
+			}
+			else if (current_state.temperature_c < 5) {
 				current_state.fan_cmd = FAN_SPEED_OFF;
 				current_fan_state.fan_cmd=FAN_SPEED_OFF;
 			}
@@ -450,6 +463,34 @@ void xTaskFanSpeed(void *pvParameters){
 			}
 		}
 	}
+extern volatile uint32_t  diffrence;
+void xTaskHcsr04(void *pvParameters){
+	const uint8_t fuel_full_cm=5;
+	const uint8_t fuel_empty_cm=20;
+
+	while(1){
+		hcsr04_trig_hc();
+
+		//we will wait for the ISR to send data back when we triggered the hcsr04
+		if(xSemaphoreTake(xHcsr04Semaphore, pdMS_TO_TICKS(100)) == pdFALSE){
+			uint16_t distance_cm=diffrence;
+			uint16_t fuel_perc=0;
+			if(distance_cm<=fuel_full_cm){
+				fuel_perc=100;
+			}
+			else if(distance_cm>=fuel_empty_cm){
+				fuel_perc=0;
+			}
+			else{
+				//interpolation equation
+				fuel_perc=(((distance_cm-fuel_full_cm)*100)/(fuel_empty_cm-fuel_full_cm))-100;
+			}
+			xQueueSend(xFuelDataQueue,&fuel_perc,0);
+		}
+		vTaskDelay(pdMS_TO_TICKS(1000));//we run this task every 1000 ms
+	}
+
+}
 
 /* USER CODE END 4 */
 

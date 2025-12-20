@@ -1,4 +1,8 @@
 #include <MyHcsr04.h>
+#include "FreeRTOS.h"
+#include "semphr.h"
+extern SemaphoreHandle_t xHcsr04Semaphore;
+
 #define TOP_VAL 0xFFFF
 volatile uint32_t start_time = 0, end_time = 0, diffrence = 0;
 volatile uint8_t is_first_cap = 0;
@@ -35,6 +39,7 @@ void hcsr04_init(void) {
 }
 
 void TIM1_CC_IRQHandler(void) {
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 	if (TIM1->SR & (1 << 1)) {
 		if (is_first_cap == 0) {
 			//when is_first_cap is 0 it means its rising edge
@@ -51,11 +56,15 @@ void TIM1_CC_IRQHandler(void) {
 				//first we make the starttime as smaller than the endtime so we dont get a minus value and thats it and we do our calculation
 				diffrence = (TOP_VAL - start_time) + end_time;
 
+
 			}
+
 			is_first_cap = 0;
+			xSemaphoreGiveFromISR(xHcsr04Semaphore, &xHigherPriorityTaskWoken);
 		}
 
 		TIM1->SR &= ~(1 << 1);//clear manually
+		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);//we will yeild the semophore
 	}
 }
 //the interrupt is done
