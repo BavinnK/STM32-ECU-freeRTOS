@@ -463,17 +463,19 @@ void xTaskFanSpeed(void *pvParameters){
 			}
 		}
 	}
-extern volatile uint32_t  diffrence;
+
 void xTaskHcsr04(void *pvParameters){
 	const uint8_t fuel_full_cm=5;
 	const uint8_t fuel_empty_cm=20;
 
 	while(1){
+
 		hcsr04_trig_hc();
 
 		//we will wait for the ISR to send data back when we triggered the hcsr04
-		if(xSemaphoreTake(xHcsr04Semaphore, pdMS_TO_TICKS(100)) == pdFALSE){
-			uint16_t distance_cm=diffrence;
+		if(xSemaphoreTake(xHcsr04Semaphore, pdMS_TO_TICKS(100)) == pdTRUE){
+
+			uint16_t distance_cm=hcsr04_get_pulse_width();
 			uint16_t fuel_perc=0;
 			if(distance_cm<=fuel_full_cm){
 				fuel_perc=100;
@@ -483,7 +485,7 @@ void xTaskHcsr04(void *pvParameters){
 			}
 			else{
 				//interpolation equation
-				fuel_perc=(((distance_cm-fuel_full_cm)*100)/(fuel_empty_cm-fuel_full_cm))-100;
+				fuel_perc=100-(((distance_cm-fuel_full_cm)*100)/(fuel_empty_cm-fuel_full_cm));
 			}
 			xQueueSend(xFuelDataQueue,&fuel_perc,0);
 		}

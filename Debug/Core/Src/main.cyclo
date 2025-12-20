@@ -8,4 +8,4 @@
 ../Core/Src/main.c:412:6:xTaskECULogic	9
 ../Core/Src/main.c:457:6:xTaskFanSpeed	2
 ../Core/Src/main.c:467:6:xTaskHcsr04	4
-../Core/Src/main.c:501:6:Error_Handler	1
+../Core/Src/main.c:503:6:Error_Handler	1
