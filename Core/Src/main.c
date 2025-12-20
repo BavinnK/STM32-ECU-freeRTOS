@@ -415,20 +415,20 @@ void xTaskECULogic(void *pvParameters) {
 			current_fan_state.throttle_percent=data;
 
 
-			if (current_state.temperature_c > 40 || current_state.throttle_percent>=80) {
+			if (current_state.temperature_c >= 60 || current_state.throttle_percent>=80) {
 				current_state.fan_cmd = FAN_SPEED_HIGH;
 				current_fan_state.fan_cmd=FAN_SPEED_HIGH;
-			} else if (current_state.temperature_c >=25 && current_state.temperature_c < 40) {
+			} else if (current_state.temperature_c >=40 && current_state.temperature_c < 60) {
 				current_state.fan_cmd = FAN_SPEED_MEDIUM;
 				current_fan_state.fan_cmd= FAN_SPEED_MEDIUM;
-			} else if (current_state.temperature_c >=10 && current_state.temperature_c < 25) {
+			} else if (current_state.temperature_c >=5 && current_state.temperature_c < 40) {
 				current_state.fan_cmd = FAN_SPEED_LOW;
 				current_fan_state.fan_cmd=FAN_SPEED_LOW;
-			} else if (current_state.temperature_c < 10) {
+			} else if (current_state.temperature_c < 5) {
 				current_state.fan_cmd = FAN_SPEED_OFF;
 				current_fan_state.fan_cmd=FAN_SPEED_OFF;
 			}
-			xQueueOverwrite(xECUDataQueue, &current_state);
+			//xQueueOverwrite(xECUDataQueue, &current_state);
 			xQueueOverwrite(xFanCommandQueue,&current_fan_state);
 			sprintf(buffer, "Temp: %dC | Thr: %d%% | Fan Cmd: %d\r\n",
 					current_state.temperature_c, current_state.throttle_percent,
