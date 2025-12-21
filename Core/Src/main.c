@@ -149,9 +149,12 @@ int main(void) {
 	//ADC DMA activated
 	//MX_ADC1_Init();
 	//adc_init();
+	NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+	NVIC_SetPriority(TIM1_CC_IRQn, 6);
+	NVIC_EnableIRQ(TIM1_CC_IRQn);
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adc_buffer, 2);
 
-	NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+
 //	char buff1[50];
 //	sprintf(buff1, "Tasks created successfully. Starting\r\n");
 //	HAL_UART_Transmit(&huart2, (uint8_t*) buff1, 52, HAL_MAX_DELAY);
@@ -159,7 +162,7 @@ int main(void) {
 	xADCDataQueue = 	xQueueCreate(1, sizeof(ADCData_t));
 	xECUDataQueue = 	xQueueCreate(2, sizeof(ECUData_t));
 	xFanCommandQueue=	xQueueCreate(1,sizeof(ECUFANSpeed_t));
-	xFuelDataQueue = 	xQueueCreate(1,sizeof(int));
+	xFuelDataQueue = 	xQueueCreate(1,sizeof(uint16_t));
 
 	if (xADCDataQueue == NULL || xECUDataQueue == NULL || xFanCommandQueue == NULL || xFuelDataQueue == NULL || xHcsr04Semaphore == NULL) {
 		//FATAL queue creation failed
@@ -413,6 +416,7 @@ void xTaskECULogic(void *pvParameters) {
 	ADCData_t received_adc;
 	ECUData_t current_state;
 	ECUFANSpeed_t current_fan_state;
+	uint16_t fuel_lvl;
 	char buffer[100];
 
 	for (;;) {
@@ -452,6 +456,11 @@ void xTaskECULogic(void *pvParameters) {
 
 
 		}
+
+		if(xQueueReceive(xFuelDataQueue, &fuel_lvl, portMAX_DELAY)==pdPASS){
+			sprintf(buffer,"fuel level: %d\n\r",fuel_lvl);
+			HAL_UART_Transmit(&huart2, (uint8_t *) buffer, strlen(buffer), HAL_MAX_DELAY);
+		}
 	}
 }
 void xTaskFanSpeed(void *pvParameters){
@@ -473,9 +482,10 @@ void xTaskHcsr04(void *pvParameters){
 		hcsr04_trig_hc();
 
 		//we will wait for the ISR to send data back when we triggered the hcsr04
-		if(xSemaphoreTake(xHcsr04Semaphore, pdMS_TO_TICKS(100)) == pdTRUE){
+		if(xSemaphoreTake(xHcsr04Semaphore, pdMS_TO_TICKS(200)) == pdTRUE){
 
-			uint16_t distance_cm=hcsr04_get_pulse_width();
+
+			uint32_t distance_cm=hcsr04_get_pulse_width()/58;
 			uint16_t fuel_perc=0;
 			if(distance_cm<=fuel_full_cm){
 				fuel_perc=100;

@@ -26,7 +26,7 @@ void hcsr04_init(void) {
 	//TIMER 1 conifuration
 	//we will set the freq of the timer to 1Mhz so each tick is 1us
 	//and we will set CH1 as normal input mode
-	TIM1->PSC = 15;
+	TIM1->PSC = 89;
 	TIM1->ARR = 0xFFFF;	//we want the timer to count as long as possible for the 16 bit is 65536
 	TIM1->CCMR1 &= ~(0b11);
 	TIM1->CCMR1 |= (0b01 << 0);
@@ -35,7 +35,7 @@ void hcsr04_init(void) {
 
 	//now for the INT coniguration
 	TIM1->DIER |= (1 << 1);
-	NVIC_EnableIRQ(TIM1_CC_IRQn);
+	//NVIC_EnableIRQ(TIM1_CC_IRQn);
 }
 
 void TIM1_CC_IRQHandler(void) {
@@ -64,8 +64,9 @@ void TIM1_CC_IRQHandler(void) {
 		}
 
 		TIM1->SR &= ~(1 << 1);//clear manually
-		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);//we will yeild the semophore
+
 	}
+	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);//we will yeild the semophore
 }
 //the interrupt is done
 //quick and dirty delay in us
@@ -80,5 +81,5 @@ void hcsr04_trig_hc(void) {
 	GPIOA->BSRR |= (1 << 25);		//LOW
 }
 uint32_t  hcsr04_get_pulse_width(void){
-	return diffrence/58;
+	return diffrence;
 }
