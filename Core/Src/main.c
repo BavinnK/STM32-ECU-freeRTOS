@@ -47,7 +47,7 @@ typedef struct {
 typedef struct {
 	uint16_t temperature_c;
 	uint16_t throttle_percent;
-	// int fuel_percent;
+	uint16_t fuel_percent;
 	FanSpeed_t fan_cmd;
 } ECUData_t;
 typedef struct{
@@ -160,7 +160,7 @@ int main(void) {
 //	HAL_UART_Transmit(&huart2, (uint8_t*) buff1, 52, HAL_MAX_DELAY);
 	xHcsr04Semaphore = xSemaphoreCreateBinary();
 	xADCDataQueue = 	xQueueCreate(1, sizeof(ADCData_t));
-	xECUDataQueue = 	xQueueCreate(2, sizeof(ECUData_t));
+	xECUDataQueue = 	xQueueCreate(1, sizeof(ECUData_t));
 	xFanCommandQueue=	xQueueCreate(1,sizeof(ECUFANSpeed_t));
 	xFuelDataQueue = 	xQueueCreate(1,sizeof(uint16_t));
 
@@ -414,7 +414,7 @@ void xTaskReadADC(void *pvParameters) {
  */
 void xTaskECULogic(void *pvParameters) {
 	ADCData_t received_adc={0};
-	ECUData_t current_state={0};
+	ECUData_t current_state_disp={0};
 	ECUFANSpeed_t current_fan_state={0};
 	uint16_t fuel_lvl=0;
 	char buffer[100];
@@ -425,31 +425,31 @@ void xTaskECULogic(void *pvParameters) {
 		xQueueReceive(xFuelDataQueue, &fuel_lvl, 0);
 
 
-		current_state.temperature_c = (received_adc.raw_temp * 81) / 1000;
+		current_state_disp.temperature_c = (received_adc.raw_temp * 81) / 1000;
 		uint16_t data= (received_adc.raw_throttle * 100)/ 4095;
-		current_state.throttle_percent = data;
+		current_state_disp.throttle_percent = data;
 		current_fan_state.throttle_percent=data;
 
 
-		if (current_state.temperature_c >= 60 || current_state.throttle_percent>=80) {
-			current_state.fan_cmd = FAN_SPEED_HIGH;
+		if (current_state_disp.temperature_c >= 60 || current_state_disp.throttle_percent>=80) {
 			current_fan_state.fan_cmd=FAN_SPEED_HIGH;
+			current_state_disp.fan_cmd = FAN_SPEED_HIGH;
 		}
-		else if (current_state.temperature_c >=40 && current_state.temperature_c < 60) {
-			current_state.fan_cmd = FAN_SPEED_MEDIUM;
+		else if (current_state_disp.temperature_c >=40 && current_state_disp.temperature_c < 60) {
 			current_fan_state.fan_cmd= FAN_SPEED_MEDIUM;
+			current_state_disp.fan_cmd = FAN_SPEED_MEDIUM;
 		}
-		else if (current_state.temperature_c >=5 && current_state.temperature_c < 40) {
-			current_state.fan_cmd = FAN_SPEED_LOW;
+		else if (current_state_disp.temperature_c >=5 && current_state_disp.temperature_c < 40) {
 			current_fan_state.fan_cmd=FAN_SPEED_LOW;
+			current_state_disp.fan_cmd = FAN_SPEED_LOW;
 		}
-		else if (current_state.temperature_c < 5) {
-			current_state.fan_cmd = FAN_SPEED_OFF;
+		else if (current_state_disp.temperature_c < 5) {
 			current_fan_state.fan_cmd=FAN_SPEED_OFF;
+			current_state_disp.fan_cmd = FAN_SPEED_OFF;
 		}
-			//xQueueOverwrite(xECUDataQueue, &current_state);
+		xQueueSend(xECUDataQueue,&fuel_lvl,0);
 		xQueueOverwrite(xFanCommandQueue,&current_fan_state);
-		sprintf(buffer, "Temp: %dC | Thr: %d%% | Fan Cmd: %d\r\n",current_state.temperature_c, current_state.throttle_percent,current_state.fan_cmd);
+		sprintf(buffer, "Temp: %dC | Thr: %d%% | Fan Cmd: %d\r\n",current_state_disp.temperature_c, current_state_disp.throttle_percent,current_state_disp.fan_cmd);
 		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),HAL_MAX_DELAY);
 		sprintf(buffer,"fuel level: %d\n\r",fuel_lvl);
 		HAL_UART_Transmit(&huart2, (uint8_t *) buffer, strlen(buffer), HAL_MAX_DELAY);
