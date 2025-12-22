@@ -100,6 +100,7 @@ void xTaskReadADC(void *pvParameters);
 void xTaskECULogic(void *pvParameters);
 void xTaskFanSpeed(void *pvParameters);
 void xTaskHcsr04(void *pvParameters);
+void xTaskTFTdraw(void *pvParameters);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -173,6 +174,7 @@ int main(void) {
 	xTaskCreate(xTaskECULogic, "ECU_print", 1024, NULL, 3, NULL);
 	xTaskCreate(xTaskFanSpeed, "FanSpeed", 512, NULL, 4, NULL);
 	xTaskCreate(xTaskHcsr04, "fuelData", 256, NULL, 2, NULL);
+	xTaskCreate(xTaskTFTdraw, "tftScreen", 1024, NULL, 1, NULL);
 
 	vTaskStartScheduler();
 	// Start the ADC DMA transfer. This is fire-and-forget.
@@ -498,7 +500,12 @@ void xTaskHcsr04(void *pvParameters){
 	}
 
 }
+void xTaskTFTdraw(void *pvParameters){
+	ECUData_t recived_data={0};
+	xQueueReceive(xECUDataQueue, &recived_data, 0);
 
+
+}
 /* USER CODE END 4 */
 
 /**

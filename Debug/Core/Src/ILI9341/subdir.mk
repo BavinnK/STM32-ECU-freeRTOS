@@ -5,26 +5,26 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Core/ThirdParty/FreeRTOS/portable/heap_4.c \
-../Core/ThirdParty/FreeRTOS/portable/port.c 
+../Core/Src/ILI9341/ILI9341_GFX.c \
+../Core/Src/ILI9341/ILI9341_STM32_Driver.c 
 
 OBJS += \
-./Core/ThirdParty/FreeRTOS/portable/heap_4.o \
-./Core/ThirdParty/FreeRTOS/portable/port.o 
+./Core/Src/ILI9341/ILI9341_GFX.o \
+./Core/Src/ILI9341/ILI9341_STM32_Driver.o 
 
 C_DEPS += \
-./Core/ThirdParty/FreeRTOS/portable/heap_4.d \
-./Core/ThirdParty/FreeRTOS/portable/port.d 
+./Core/Src/ILI9341/ILI9341_GFX.d \
+./Core/Src/ILI9341/ILI9341_STM32_Driver.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-Core/ThirdParty/FreeRTOS/portable/%.o Core/ThirdParty/FreeRTOS/portable/%.su Core/ThirdParty/FreeRTOS/portable/%.cyclo: ../Core/ThirdParty/FreeRTOS/portable/%.c Core/ThirdParty/FreeRTOS/portable/subdir.mk
+Core/Src/ILI9341/%.o Core/Src/ILI9341/%.su Core/Src/ILI9341/%.cyclo: ../Core/Src/ILI9341/%.c Core/Src/ILI9341/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I"C:/Users/pc/Desktop/STM_PROJECTS/V2.4_ECU_STM32_PROJECT/Core/Inc" -I"C:/Users/pc/Desktop/STM_PROJECTS/V2.4_ECU_STM32_PROJECT/Core/Inc/ILI9341" -I"C:/Users/pc/Desktop/STM_PROJECTS/V2.4_ECU_STM32_PROJECT/Core/ThirdParty/FreeRTOS/include" -I"C:/Users/pc/Desktop/STM_PROJECTS/V2.4_ECU_STM32_PROJECT/Core/ThirdParty/FreeRTOS/portable" -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@"
 
-clean: clean-Core-2f-ThirdParty-2f-FreeRTOS-2f-portable
+clean: clean-Core-2f-Src-2f-ILI9341
 
-clean-Core-2f-ThirdParty-2f-FreeRTOS-2f-portable:
-	-$(RM) ./Core/ThirdParty/FreeRTOS/portable/heap_4.cyclo ./Core/ThirdParty/FreeRTOS/portable/heap_4.d ./Core/ThirdParty/FreeRTOS/portable/heap_4.o ./Core/ThirdParty/FreeRTOS/portable/heap_4.su ./Core/ThirdParty/FreeRTOS/portable/port.cyclo ./Core/ThirdParty/FreeRTOS/portable/port.d ./Core/ThirdParty/FreeRTOS/portable/port.o ./Core/ThirdParty/FreeRTOS/portable/port.su
+clean-Core-2f-Src-2f-ILI9341:
+	-$(RM) ./Core/Src/ILI9341/ILI9341_GFX.cyclo ./Core/Src/ILI9341/ILI9341_GFX.d ./Core/Src/ILI9341/ILI9341_GFX.o ./Core/Src/ILI9341/ILI9341_GFX.su ./Core/Src/ILI9341/ILI9341_STM32_Driver.cyclo ./Core/Src/ILI9341/ILI9341_STM32_Driver.d ./Core/Src/ILI9341/ILI9341_STM32_Driver.o ./Core/Src/ILI9341/ILI9341_STM32_Driver.su
 
-.PHONY: clean-Core-2f-ThirdParty-2f-FreeRTOS-2f-portable
+.PHONY: clean-Core-2f-Src-2f-ILI9341
 
