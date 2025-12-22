@@ -413,54 +413,49 @@ void xTaskReadADC(void *pvParameters) {
  * @brief  xTaskECULogic: (Test Stub) Waits for ADC data and prints it via UART.
  */
 void xTaskECULogic(void *pvParameters) {
-	ADCData_t received_adc;
-	ECUData_t current_state;
-	ECUFANSpeed_t current_fan_state;
-	uint16_t fuel_lvl;
+	ADCData_t received_adc={0};
+	ECUData_t current_state={0};
+	ECUFANSpeed_t current_fan_state={0};
+	uint16_t fuel_lvl=0;
 	char buffer[100];
 
 	for (;;) {
 		// Wait forever until a message arrives in the ADC queue.
-		if (xQueueReceive(xADCDataQueue, &received_adc, portMAX_DELAY) == pdPASS) {
-
-			current_state.temperature_c = (received_adc.raw_temp * 81) / 1000;
-			uint16_t data= (received_adc.raw_throttle * 100)/ 4095;
-			current_state.throttle_percent = data;
-			current_fan_state.throttle_percent=data;
+		xQueueReceive(xADCDataQueue, &received_adc, 0);
+		xQueueReceive(xFuelDataQueue, &fuel_lvl, 0);
 
 
-			if (current_state.temperature_c >= 60 || current_state.throttle_percent>=80) {
-				current_state.fan_cmd = FAN_SPEED_HIGH;
-				current_fan_state.fan_cmd=FAN_SPEED_HIGH;
-			}
-			else if (current_state.temperature_c >=40 && current_state.temperature_c < 60) {
-				current_state.fan_cmd = FAN_SPEED_MEDIUM;
-				current_fan_state.fan_cmd= FAN_SPEED_MEDIUM;
-			}
-			else if (current_state.temperature_c >=5 && current_state.temperature_c < 40) {
-				current_state.fan_cmd = FAN_SPEED_LOW;
-				current_fan_state.fan_cmd=FAN_SPEED_LOW;
-			}
-			else if (current_state.temperature_c < 5) {
-				current_state.fan_cmd = FAN_SPEED_OFF;
-				current_fan_state.fan_cmd=FAN_SPEED_OFF;
-			}
+		current_state.temperature_c = (received_adc.raw_temp * 81) / 1000;
+		uint16_t data= (received_adc.raw_throttle * 100)/ 4095;
+		current_state.throttle_percent = data;
+		current_fan_state.throttle_percent=data;
+
+
+		if (current_state.temperature_c >= 60 || current_state.throttle_percent>=80) {
+			current_state.fan_cmd = FAN_SPEED_HIGH;
+			current_fan_state.fan_cmd=FAN_SPEED_HIGH;
+		}
+		else if (current_state.temperature_c >=40 && current_state.temperature_c < 60) {
+			current_state.fan_cmd = FAN_SPEED_MEDIUM;
+			current_fan_state.fan_cmd= FAN_SPEED_MEDIUM;
+		}
+		else if (current_state.temperature_c >=5 && current_state.temperature_c < 40) {
+			current_state.fan_cmd = FAN_SPEED_LOW;
+			current_fan_state.fan_cmd=FAN_SPEED_LOW;
+		}
+		else if (current_state.temperature_c < 5) {
+			current_state.fan_cmd = FAN_SPEED_OFF;
+			current_fan_state.fan_cmd=FAN_SPEED_OFF;
+		}
 			//xQueueOverwrite(xECUDataQueue, &current_state);
-			xQueueOverwrite(xFanCommandQueue,&current_fan_state);
-			sprintf(buffer, "Temp: %dC | Thr: %d%% | Fan Cmd: %d\r\n",
-					current_state.temperature_c, current_state.throttle_percent,
-					current_state.fan_cmd);
-			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),
-					HAL_MAX_DELAY);
-			//vTaskDelay(200);
+		xQueueOverwrite(xFanCommandQueue,&current_fan_state);
+		sprintf(buffer, "Temp: %dC | Thr: %d%% | Fan Cmd: %d\r\n",current_state.temperature_c, current_state.throttle_percent,current_state.fan_cmd);
+		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),HAL_MAX_DELAY);
+		sprintf(buffer,"fuel level: %d\n\r",fuel_lvl);
+		HAL_UART_Transmit(&huart2, (uint8_t *) buffer, strlen(buffer), HAL_MAX_DELAY);
+		/* run this task 10 times per second */
+		vTaskDelay(pdMS_TO_TICKS(100));
 
-
-		}
-
-		if(xQueueReceive(xFuelDataQueue, &fuel_lvl, portMAX_DELAY)==pdPASS){
-			sprintf(buffer,"fuel level: %d\n\r",fuel_lvl);
-			HAL_UART_Transmit(&huart2, (uint8_t *) buffer, strlen(buffer), HAL_MAX_DELAY);
-		}
 	}
 }
 void xTaskFanSpeed(void *pvParameters){

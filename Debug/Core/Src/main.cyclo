@@ -7,7 +7,7 @@
 ../Core/Src/main.c:308:13:MX_USART2_UART_Init	2
 ../Core/Src/main.c:339:13:MX_GPIO_Init	1
 ../Core/Src/main.c:394:6:xTaskReadADC	1
-../Core/Src/main.c:415:6:xTaskECULogic	10
-../Core/Src/main.c:466:6:xTaskFanSpeed	2
-../Core/Src/main.c:476:6:xTaskHcsr04	4
-../Core/Src/main.c:513:6:Error_Handler	1
+../Core/Src/main.c:415:6:xTaskECULogic	8
+../Core/Src/main.c:461:6:xTaskFanSpeed	2
+../Core/Src/main.c:471:6:xTaskHcsr04	4
+../Core/Src/main.c:508:6:Error_Handler	1
