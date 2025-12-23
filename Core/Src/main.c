@@ -62,6 +62,7 @@ QueueHandle_t xECUDataQueue;
 QueueHandle_t xFanCommandQueue;
 QueueHandle_t xFuelDataQueue;
 SemaphoreHandle_t xHcsr04Semaphore;
+SemaphoreHandle_t xSPIMutex;
 
 
 /* USER CODE END Includes */
@@ -151,6 +152,10 @@ int main(void)
 	//ADC DMA activated
 	//MX_ADC1_Init();
 	//adc_init();
+  relay_init();
+  hcsr04_init();
+
+
 	NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
 	NVIC_SetPriority(TIM1_CC_IRQn, 6);
 	NVIC_EnableIRQ(TIM1_CC_IRQn);
@@ -160,7 +165,8 @@ int main(void)
 //	char buff1[50];
 //	sprintf(buff1, "Tasks created successfully. Starting\r\n");
 //	HAL_UART_Transmit(&huart2, (uint8_t*) buff1, 52, HAL_MAX_DELAY);
-	xHcsr04Semaphore = xSemaphoreCreateBinary();
+	xHcsr04Semaphore =  xSemaphoreCreateBinary();
+	xSPIMutex=			xSemaphoreCreateMutex();
 	xADCDataQueue = 	xQueueCreate(1, sizeof(ADCData_t));
 	xECUDataQueue = 	xQueueCreate(1, sizeof(ECUData_t));
 	xFanCommandQueue=	xQueueCreate(1,sizeof(ECUFANSpeed_t));
@@ -452,9 +458,7 @@ void xTaskReadADC(void *pvParameters) {
 	}
 }
 
-/**
- * @brief  xTaskECULogic: (Test Stub) Waits for ADC data and prints it via UART.
- */
+
 void xTaskECULogic(void *pvParameters) {
 	ADCData_t received_adc={0};
 	ECUData_t current_state_disp={0};
@@ -543,21 +547,42 @@ void xTaskHcsr04(void *pvParameters){
 }
 void xTaskTFTdraw(void *pvParameters){
 	ECUData_t recived_data={0};
-	char buffer[100];
-	char buffer1[30];
-	sprintf(buffer1,"BAVREX Industry");
-	while(1){
-	xQueueReceive(xECUDataQueue, &recived_data, 0);
+	char buff[60];
+	ILI9341_Init();
+	if(xSemaphoreTake(xSPIMutex,portMAX_DELAY)==pdTRUE){
+		ILI9341_Fill_Screen(BLACK);//clear screen
+		ILI9341_Draw_Text("BAVREX ENGINEERING", 40, 100, LIGHTGREY, 2, BLACK);
 
-
-	sprintf(buffer,"Oil Temperature: %d\n\r Fan Speed: %d\n\r RPM: %d\n\r Fuel Level: %d",
-			recived_data.temperature_c,
-			recived_data.fan_cmd,
-			recived_data.throttle_percent,
-			recived_data.fuel_percent);
-	ILI9341_Draw_Text(buffer, 10, 10, GREEN, 20, BLACK);
+		ILI9341_Draw_Text("ECU Online", 90, 130, GREEN, 1, BLACK);
+		xSemaphoreGive(xSPIMutex);
 	}
+	vTaskDelay(2500);//2.5 sec delay
 
+	for(;;){
+		if(xQueueReceive(xECUDataQueue, &recived_data, pdMS_TO_TICKS(50))){
+			if(xSemaphoreTake(xSPIMutex,portMAX_DELAY)){
+				ILI9341_Fill_Screen(BLACK);//clear the screen
+				sprintf(buff,"Oil Temp: %dC",recived_data.temperature_c);
+				ILI9341_Draw_Text(buff, 10, 50, WHITE, 2, BLACK);
+
+				//we have the throttle in percent but we need it in RPM
+				int rpm=800+(recived_data.throttle_percent*62);
+				sprintf(buff,"RPM: %d",rpm);
+				ILI9341_Draw_Text(buff, 10, 80, WHITE, 2, BLACK);
+
+				sprintf(buff,"Fuel: %d",recived_data.fuel_percent);
+				ILI9341_Draw_Text(buff, 10, 110, WHITE, 2, BLACK);
+
+				sprintf(buff,"Fan State: %d",recived_data.fan_cmd);
+				ILI9341_Draw_Text(buff, 10, 140, WHITE, 2, BLACK);
+
+				//now when we are done with the screen, we hand over the mutex for other tasks, but since no other task uses it its not neccesary
+				//but its a good practice todo and use mutex
+
+				xSemaphoreGive(xSPIMutex);
+			}
+		}
+	}
 }
 /* USER CODE END 4 */
 
