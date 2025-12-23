@@ -3804,7 +3804,7 @@ void xTaskTFTdraw(void *pvParameters){
  8001bde:	f001 fac5 	bl	800316c <vTaskDelay>
 
 	for(;;){
-		if(xQueueReceive(xECUDataQueue, &recived_data, pdMS_TO_TICKS(50))){
+		if(xQueueReceive(xECUDataQueue, &recived_data, pdMS_TO_TICKS(50))==pdTRUE){
  8001be2:	4b41      	ldr	r3, [pc, #260]	@ (8001ce8 <xTaskTFTdraw+0x178>)
  8001be4:	681b      	ldr	r3, [r3, #0]
  8001be6:	f107 0144 	add.w	r1, r7, #68	@ 0x44
@@ -3812,17 +3812,17 @@ void xTaskTFTdraw(void *pvParameters){
  8001bec:	4618      	mov	r0, r3
  8001bee:	f000 fd81 	bl	80026f4 <xQueueReceive>
  8001bf2:	4603      	mov	r3, r0
- 8001bf4:	2b00      	cmp	r3, #0
- 8001bf6:	d0f4      	beq.n	8001be2 <xTaskTFTdraw+0x72>
-			if(xSemaphoreTake(xSPIMutex,portMAX_DELAY)){
+ 8001bf4:	2b01      	cmp	r3, #1
+ 8001bf6:	d1f4      	bne.n	8001be2 <xTaskTFTdraw+0x72>
+			if(xSemaphoreTake(xSPIMutex,portMAX_DELAY)==pdTRUE){
  8001bf8:	4b38      	ldr	r3, [pc, #224]	@ (8001cdc <xTaskTFTdraw+0x16c>)
  8001bfa:	681b      	ldr	r3, [r3, #0]
  8001bfc:	f04f 31ff 	mov.w	r1, #4294967295
  8001c00:	4618      	mov	r0, r3
  8001c02:	f000 fe59 	bl	80028b8 <xQueueSemaphoreTake>
  8001c06:	4603      	mov	r3, r0
- 8001c08:	2b00      	cmp	r3, #0
- 8001c0a:	d0ea      	beq.n	8001be2 <xTaskTFTdraw+0x72>
+ 8001c08:	2b01      	cmp	r3, #1
+ 8001c0a:	d1ea      	bne.n	8001be2 <xTaskTFTdraw+0x72>
 				ILI9341_Fill_Screen(BLACK);//clear the screen
  8001c0c:	2000      	movs	r0, #0
  8001c0e:	f7ff f889 	bl	8000d24 <ILI9341_Fill_Screen>
@@ -3917,7 +3917,7 @@ void xTaskTFTdraw(void *pvParameters){
  8001cd0:	2200      	movs	r2, #0
  8001cd2:	2100      	movs	r1, #0
  8001cd4:	f000 fb64 	bl	80023a0 <xQueueGenericSend>
-		if(xQueueReceive(xECUDataQueue, &recived_data, pdMS_TO_TICKS(50))){
+		if(xQueueReceive(xECUDataQueue, &recived_data, pdMS_TO_TICKS(50))==pdTRUE){
  8001cd8:	e783      	b.n	8001be2 <xTaskTFTdraw+0x72>
  8001cda:	bf00      	nop
  8001cdc:	200000a4 	.word	0x200000a4

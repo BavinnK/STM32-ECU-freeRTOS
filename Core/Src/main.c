@@ -559,8 +559,8 @@ void xTaskTFTdraw(void *pvParameters){
 	vTaskDelay(2500);//2.5 sec delay
 
 	for(;;){
-		if(xQueueReceive(xECUDataQueue, &recived_data, pdMS_TO_TICKS(50))){
-			if(xSemaphoreTake(xSPIMutex,portMAX_DELAY)){
+		if(xQueueReceive(xECUDataQueue, &recived_data, pdMS_TO_TICKS(50))==pdTRUE){
+			if(xSemaphoreTake(xSPIMutex,portMAX_DELAY)==pdTRUE){
 				ILI9341_Fill_Screen(BLACK);//clear the screen
 				sprintf(buff,"Oil Temp: %dC",recived_data.temperature_c);
 				ILI9341_Draw_Text(buff, 10, 50, WHITE, 2, BLACK);
