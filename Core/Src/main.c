@@ -62,7 +62,7 @@ QueueHandle_t xECUDataQueue;
 QueueHandle_t xFanCommandQueue;
 QueueHandle_t xFuelDataQueue;
 SemaphoreHandle_t xHcsr04Semaphore;
-SemaphoreHandle_t xSPIMutex;
+//SemaphoreHandle_t xSPIMutex;
 
 
 /* USER CODE END Includes */
@@ -155,9 +155,13 @@ int main(void)
   relay_init();
   hcsr04_init();
 
+  ILI9341_Init();
+  //ILI9341_Fill_Screen(BLACK);
+
+
 
 	NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
-	NVIC_SetPriority(TIM1_CC_IRQn, 6);
+	NVIC_SetPriority(TIM1_CC_IRQn, 5);
 	NVIC_EnableIRQ(TIM1_CC_IRQn);
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adc_buffer, 2);
 
@@ -166,7 +170,7 @@ int main(void)
 //	sprintf(buff1, "Tasks created successfully. Starting\r\n");
 //	HAL_UART_Transmit(&huart2, (uint8_t*) buff1, 52, HAL_MAX_DELAY);
 	xHcsr04Semaphore =  xSemaphoreCreateBinary();
-	xSPIMutex=			xSemaphoreCreateMutex();
+//	xSPIMutex=			xSemaphoreCreateMutex();
 	xADCDataQueue = 	xQueueCreate(1, sizeof(ADCData_t));
 	xECUDataQueue = 	xQueueCreate(1, sizeof(ECUData_t));
 	xFanCommandQueue=	xQueueCreate(1,sizeof(ECUFANSpeed_t));
@@ -185,7 +189,7 @@ int main(void)
 	*/
 	xTaskCreate(xTaskFanSpeed, "FanSpeed", 512, NULL, 4, NULL); /* Task to get the command from the ecuLogic and depending on that command turns on relays */
 	xTaskCreate(xTaskHcsr04, "fuelData", 256, NULL, 2, NULL);	/* this is producer task, it produces data which is the fuel data, and sends the data by Queue to the ecuLogic */
-	xTaskCreate(xTaskTFTdraw, "tftScreen", 1024, NULL, 1, NULL);/* again this is consumer Task, gets the data from the ecuLogic, and prints it on the tft */
+	xTaskCreate(xTaskTFTdraw, "tftScreen", 1024, NULL, 3, NULL);/* again this is consumer Task, gets the data from the ecuLogic, and prints it on the tft */
 
 	vTaskStartScheduler();
 	// Start the ADC DMA transfer. This is fire-and-forget.
@@ -507,7 +511,7 @@ void xTaskECULogic(void *pvParameters) {
 			current_fan_state.fan_cmd=FAN_SPEED_OFF;
 			current_state_disp.fan_cmd = FAN_SPEED_OFF;
 		}
-		xQueueSend(xECUDataQueue,&fuel_lvl,0);
+		xQueueOverwrite(xECUDataQueue,&fuel_lvl);
 		xQueueOverwrite(xFanCommandQueue,&current_fan_state);
 		sprintf(buffer, "Temp: %dC | Thr: %d%% | Fan Cmd: %d\r\n",current_state_disp.temperature_c, current_state_disp.throttle_percent,current_state_disp.fan_cmd);
 		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),HAL_MAX_DELAY);
@@ -562,20 +566,20 @@ void xTaskHcsr04(void *pvParameters){
 void xTaskTFTdraw(void *pvParameters){
 	ECUData_t recived_data={0};
 	char buff[60];
-	ILI9341_Init();
-	if(xSemaphoreTake(xSPIMutex,portMAX_DELAY)==pdTRUE){
+	//ILI9341_Init();
+	//if(xSemaphoreTake(xSPIMutex,portMAX_DELAY)==pdTRUE){
 		ILI9341_Fill_Screen(BLACK);//clear screen
 		ILI9341_Draw_Text("BAVREX ENGINEERING", 40, 100, LIGHTGREY, 2, BLACK);
 
 		ILI9341_Draw_Text("ECU Online", 90, 130, GREEN, 1, BLACK);
-		xSemaphoreGive(xSPIMutex);
-	}
+		//xSemaphoreGive(xSPIMutex);
+	//}
 	vTaskDelay(2500);//2.5 sec delay
 
 	for(;;){
 		if(xQueueReceive(xECUDataQueue, &recived_data, pdMS_TO_TICKS(50))==pdTRUE){
-			if(xSemaphoreTake(xSPIMutex,portMAX_DELAY)==pdTRUE){
-				ILI9341_Fill_Screen(BLACK);//clear the screen
+		//	if(xSemaphoreTake(xSPIMutex,portMAX_DELAY)==pdTRUE){
+				//ILI9341_Fill_Screen(BLACK);//clear the screen
 				sprintf(buff,"Oil Temp: %dC",recived_data.temperature_c);
 				ILI9341_Draw_Text(buff, 10, 50, WHITE, 2, BLACK);
 
@@ -592,10 +596,11 @@ void xTaskTFTdraw(void *pvParameters){
 
 				//now when we are done with the screen, we hand over the mutex for other tasks, but since no other task uses it its not neccesary
 				//but its a good practice todo and use mutex
-
-				xSemaphoreGive(xSPIMutex);
+				vTaskDelay(pdMS_TO_TICKS(2000));
+				//xSemaphoreGive(xSPIMutex);
 			}
-		}
+
+		//}
 	}
 }
 

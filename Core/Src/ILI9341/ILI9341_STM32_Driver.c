@@ -85,6 +85,8 @@
 #include "ILI9341_STM32_Driver.h"
 //#include "spi.h"
 //#include "gpio.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 /* Global Variables ------------------------------------------------------------------*/
 volatile uint16_t LCD_HEIGHT = ILI9341_SCREEN_HEIGHT;
@@ -143,9 +145,11 @@ ILI9341_Write_Command(0x2C);
 void ILI9341_Reset(void)
 {
 HAL_GPIO_WritePin(LCD_RST_PORT, LCD_RST_PIN, GPIO_PIN_RESET);
-HAL_Delay(200);
+//HAL_Delay(200);
+vTaskDelay(pdMS_TO_TICKS(200));
 HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
-HAL_Delay(200);
+//HAL_Delay(200);
+vTaskDelay(pdMS_TO_TICKS(200));
 HAL_GPIO_WritePin(LCD_RST_PORT, LCD_RST_PIN, GPIO_PIN_SET);	
 }
 
@@ -156,7 +160,8 @@ void ILI9341_Set_Rotation(uint8_t Rotation)
 uint8_t screen_rotation = Rotation;
 
 ILI9341_Write_Command(0x36);
-HAL_Delay(1);
+//HAL_Delay(1);
+vTaskDelay(pdMS_TO_TICKS(1));
 	
 switch(screen_rotation) 
 	{
@@ -202,7 +207,8 @@ ILI9341_Reset();
 
 //SOFTWARE RESET
 ILI9341_Write_Command(0x01);
-HAL_Delay(1000);
+//HAL_Delay(1000);
+vTaskDelay(pdMS_TO_TICKS(1000));
 	
 //POWER CONTROL A
 ILI9341_Write_Command(0xCB);
@@ -322,7 +328,8 @@ ILI9341_Write_Data(0x0F);
 
 //EXIT SLEEP
 ILI9341_Write_Command(0x11);
-HAL_Delay(120);
+//HAL_Delay(120);
+vTaskDelay(pdMS_TO_TICKS(120));
 
 //TURN ON DISPLAY
 ILI9341_Write_Command(0x29);
