@@ -155,8 +155,6 @@ int main(void)
   relay_init();
   hcsr04_init();
 
-  ILI9341_Init();
-  //ILI9341_Fill_Screen(BLACK);
 
 
 
@@ -189,7 +187,7 @@ int main(void)
 	*/
 	xTaskCreate(xTaskFanSpeed, "FanSpeed", 512, NULL, 4, NULL); /* Task to get the command from the ecuLogic and depending on that command turns on relays */
 	xTaskCreate(xTaskHcsr04, "fuelData", 256, NULL, 2, NULL);	/* this is producer task, it produces data which is the fuel data, and sends the data by Queue to the ecuLogic */
-	xTaskCreate(xTaskTFTdraw, "tftScreen", 1024, NULL, 3, NULL);/* again this is consumer Task, gets the data from the ecuLogic, and prints it on the tft */
+	xTaskCreate(xTaskTFTdraw, "tftScreen", 1024, NULL, 1, NULL);/* again this is consumer Task, gets the data from the ecuLogic, and prints it on the tft */
 
 	vTaskStartScheduler();
 	// Start the ADC DMA transfer. This is fire-and-forget.
@@ -565,9 +563,12 @@ void xTaskHcsr04(void *pvParameters){
 
 void xTaskTFTdraw(void *pvParameters){
 	ECUData_t recived_data={0};
-	char buff[60];
+
 	//ILI9341_Init();
 	//if(xSemaphoreTake(xSPIMutex,portMAX_DELAY)==pdTRUE){
+	ILI9341_Init();
+	ILI9341_Fill_Screen(BLACK);
+
 		ILI9341_Fill_Screen(BLACK);//clear screen
 		ILI9341_Draw_Text("BAVREX ENGINEERING", 40, 100, LIGHTGREY, 2, BLACK);
 
@@ -578,8 +579,9 @@ void xTaskTFTdraw(void *pvParameters){
 
 	for(;;){
 		if(xQueueReceive(xECUDataQueue, &recived_data, pdMS_TO_TICKS(50))==pdTRUE){
+			char buff[60];
 		//	if(xSemaphoreTake(xSPIMutex,portMAX_DELAY)==pdTRUE){
-				//ILI9341_Fill_Screen(BLACK);//clear the screen
+				ILI9341_Fill_Screen(BLACK);//clear the screen
 				sprintf(buff,"Oil Temp: %dC",recived_data.temperature_c);
 				ILI9341_Draw_Text(buff, 10, 50, WHITE, 2, BLACK);
 

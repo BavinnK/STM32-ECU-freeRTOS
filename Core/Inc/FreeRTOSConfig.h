@@ -26,7 +26,7 @@ extern uint32_t SystemCoreClock;
 
 //----------------- Memory Settings -------------------------
 #define configSUPPORT_DYNAMIC_ALLOCATION        1
-#define configTOTAL_HEAP_SIZE                   ( ( size_t ) ( 15 * 1024 ) ) // 15KB for tasks, queues, etc.
+#define configTOTAL_HEAP_SIZE                   ( ( size_t ) ( 20 * 1024 ) ) // 15KB for tasks, queues, etc.
 
 //----------------- API Inclusion Settings ------------------
 #define configUSE_MUTEXES                       1
