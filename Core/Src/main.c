@@ -84,7 +84,7 @@ SemaphoreHandle_t xSPIMutex;
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
-
+DMA_HandleTypeDef hdma_adc1;
 SPI_HandleTypeDef hspi1;
 
 UART_HandleTypeDef huart2;
@@ -259,49 +259,62 @@ void SystemClock_Config(void)
   */
 static void MX_ADC1_Init(void)
 {
+	ADC_ChannelConfTypeDef sConfig = { 0 };
 
-  /* USER CODE BEGIN ADC1_Init 0 */
+	// 1. Enable Clocks
+		__HAL_RCC_ADC1_CLK_ENABLE();
+		__HAL_RCC_DMA2_CLK_ENABLE();
+		__HAL_RCC_GPIOA_CLK_ENABLE();
 
-  /* USER CODE END ADC1_Init 0 */
+	// 2. Configure GPIO pins PA0 and PA1 as Analog
+		GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+		GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1;
+		GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+		GPIO_InitStruct.Pull = GPIO_NOPULL;
+		HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  ADC_ChannelConfTypeDef sConfig = {0};
+	// 3. Configure DMA
+		hdma_adc1.Instance = DMA2_Stream0;
+		hdma_adc1.Init.Channel = DMA_CHANNEL_0;
+		hdma_adc1.Init.Direction = DMA_PERIPH_TO_MEMORY;
+		hdma_adc1.Init.PeriphInc = DMA_PINC_DISABLE;
+		hdma_adc1.Init.MemInc = DMA_MINC_ENABLE;
+		hdma_adc1.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+		hdma_adc1.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+		hdma_adc1.Init.Mode = DMA_CIRCULAR;
+		hdma_adc1.Init.Priority = DMA_PRIORITY_HIGH;
+		hdma_adc1.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+		HAL_DMA_Init(&hdma_adc1);
 
-  /* USER CODE BEGIN ADC1_Init 1 */
+	// Link the DMA handle to the ADC handle
+		__HAL_LINKDMA(&hadc1, DMA_Handle, hdma_adc1);
 
-  /* USER CODE END ADC1_Init 1 */
+	// 4. Configure the ADC core
+		hadc1.Instance = ADC1;
+		hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+		hadc1.Init.Resolution = ADC_RESOLUTION_12B;
+		hadc1.Init.ScanConvMode = ENABLE; // Scan multiple channels
+		hadc1.Init.ContinuousConvMode = ENABLE; // Convert continuously
+		hadc1.Init.DiscontinuousConvMode = DISABLE;
+		hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+		hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+		hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+		hadc1.Init.NbrOfConversion = 2; // We are converting 2 channels
+		hadc1.Init.DMAContinuousRequests = ENABLE;
+		hadc1.Init.EOCSelection = ADC_EOC_SEQ_CONV;
+		HAL_ADC_Init(&hadc1);
 
-  /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
-  */
-  hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
-  hadc1.Init.Resolution = ADC_RESOLUTION_12B;
-  hadc1.Init.ScanConvMode = DISABLE;
-  hadc1.Init.ContinuousConvMode = DISABLE;
-  hadc1.Init.DiscontinuousConvMode = DISABLE;
-  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
-  hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc1.Init.NbrOfConversion = 1;
-  hadc1.Init.DMAContinuousRequests = DISABLE;
-  hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
-  if (HAL_ADC_Init(&hadc1) != HAL_OK)
-  {
-    Error_Handler();
-  }
+	// 5. Configure the ADC channels for the scan sequence
+	// Channel 0 - Temp Sensor
+		sConfig.Channel = ADC_CHANNEL_0;
+		sConfig.Rank = 1; // First in the sequence
+		sConfig.SamplingTime = ADC_SAMPLETIME_84CYCLES;
+		HAL_ADC_ConfigChannel(&hadc1, &sConfig);
 
-  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-  */
-  sConfig.Channel = ADC_CHANNEL_0;
-  sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
-  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN ADC1_Init 2 */
-
-  /* USER CODE END ADC1_Init 2 */
-
+	// Channel 1 - Throttle Potentiometer
+		sConfig.Channel = ADC_CHANNEL_1;
+		sConfig.Rank = 2; // Second in the sequence
+		HAL_ADC_ConfigChannel(&hadc1, &sConfig);
 }
 
 /**
@@ -545,6 +558,7 @@ void xTaskHcsr04(void *pvParameters){
 	}
 
 }
+
 void xTaskTFTdraw(void *pvParameters){
 	ECUData_t recived_data={0};
 	char buff[60];
@@ -584,6 +598,7 @@ void xTaskTFTdraw(void *pvParameters){
 		}
 	}
 }
+
 /* USER CODE END 4 */
 
 /**

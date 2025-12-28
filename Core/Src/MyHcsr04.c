@@ -76,9 +76,9 @@ void delay_us_hc(uint32_t us) {
 	}
 }
 void hcsr04_trig_hc(void) {
-	GPIOA->BSRR |= (1 << 9);			//HIGH
+	GPIOA->BSRR = (1 << 10);			//HIGH
 	delay_us_hc(10);						//small delay
-	GPIOA->BSRR |= (1 << 25);		//LOW
+	GPIOA->BSRR = (1 << 26);		//LOW
 }
 uint32_t  hcsr04_get_pulse_width(void){
 	return diffrence;
