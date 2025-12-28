@@ -1925,7 +1925,7 @@ volatile uint8_t is_first_cap = 0;
 void hcsr04_init(void) {
  8000fbc:	b480      	push	{r7}
  8000fbe:	af00      	add	r7, sp, #0
-	//PA9 for trig and PA8 for echo
+	//PA10 for trig and PA8 for echo
 	RCC->AHB1ENR |= (0b1);
  8000fc0:	4b32      	ldr	r3, [pc, #200]	@ (800108c <hcsr04_init+0xd0>)
  8000fc2:	6b1b      	ldr	r3, [r3, #48]	@ 0x30
@@ -1938,30 +1938,30 @@ void hcsr04_init(void) {
  8000fd0:	4a2e      	ldr	r2, [pc, #184]	@ (800108c <hcsr04_init+0xd0>)
  8000fd2:	f043 0301 	orr.w	r3, r3, #1
  8000fd6:	6453      	str	r3, [r2, #68]	@ 0x44
-	//configuring triger pin PA9 for output
-	GPIOA->MODER &= ~((1 << 19) | (1 << 18));
+	//configuring triger pin PA10 for output
+	GPIOA->MODER &= ~(( 0b11 << 2*10 ));
  8000fd8:	4b2d      	ldr	r3, [pc, #180]	@ (8001090 <hcsr04_init+0xd4>)
  8000fda:	681b      	ldr	r3, [r3, #0]
  8000fdc:	4a2c      	ldr	r2, [pc, #176]	@ (8001090 <hcsr04_init+0xd4>)
- 8000fde:	f423 2340 	bic.w	r3, r3, #786432	@ 0xc0000
+ 8000fde:	f423 1340 	bic.w	r3, r3, #3145728	@ 0x300000
  8000fe2:	6013      	str	r3, [r2, #0]
-	GPIOA->MODER |= ((1 << 18));
+	GPIOA->MODER |= ((1 << 20));
  8000fe4:	4b2a      	ldr	r3, [pc, #168]	@ (8001090 <hcsr04_init+0xd4>)
  8000fe6:	681b      	ldr	r3, [r3, #0]
  8000fe8:	4a29      	ldr	r2, [pc, #164]	@ (8001090 <hcsr04_init+0xd4>)
- 8000fea:	f443 2380 	orr.w	r3, r3, #262144	@ 0x40000
+ 8000fea:	f443 1380 	orr.w	r3, r3, #1048576	@ 0x100000
  8000fee:	6013      	str	r3, [r2, #0]
-	GPIOA->OTYPER &= ~(1 << 9);    //enable push pull
+	GPIOA->OTYPER &= ~(1 << 10);    //reset state
  8000ff0:	4b27      	ldr	r3, [pc, #156]	@ (8001090 <hcsr04_init+0xd4>)
  8000ff2:	685b      	ldr	r3, [r3, #4]
  8000ff4:	4a26      	ldr	r2, [pc, #152]	@ (8001090 <hcsr04_init+0xd4>)
- 8000ff6:	f423 7300 	bic.w	r3, r3, #512	@ 0x200
+ 8000ff6:	f423 6380 	bic.w	r3, r3, #1024	@ 0x400
  8000ffa:	6053      	str	r3, [r2, #4]
-	GPIOA->PUPDR &= ~((1 << 19) | (1 << 18));    //disable push pull resistor
+	GPIOA->PUPDR &= ~(0b11<<2*10);    //disable push pull resistor
  8000ffc:	4b24      	ldr	r3, [pc, #144]	@ (8001090 <hcsr04_init+0xd4>)
  8000ffe:	68db      	ldr	r3, [r3, #12]
  8001000:	4a23      	ldr	r2, [pc, #140]	@ (8001090 <hcsr04_init+0xd4>)
- 8001002:	f423 2340 	bic.w	r3, r3, #786432	@ 0xc0000
+ 8001002:	f423 1340 	bic.w	r3, r3, #3145728	@ 0x300000
  8001006:	60d3      	str	r3, [r2, #12]
 
 	//configuring echo pin PA8

@@ -8,14 +8,14 @@ volatile uint32_t start_time = 0, end_time = 0, diffrence = 0;
 volatile uint8_t is_first_cap = 0;
 
 void hcsr04_init(void) {
-	//PA9 for trig and PA8 for echo
+	//PA10 for trig and PA8 for echo
 	RCC->AHB1ENR |= (0b1);
 	RCC->APB2ENR |= (0b1);
-	//configuring triger pin PA9 for output
-	GPIOA->MODER &= ~((1 << 19) | (1 << 18));
-	GPIOA->MODER |= ((1 << 18));
-	GPIOA->OTYPER &= ~(1 << 9);    //enable push pull
-	GPIOA->PUPDR &= ~((1 << 19) | (1 << 18));    //disable push pull resistor
+	//configuring triger pin PA10 for output
+	GPIOA->MODER &= ~(( 0b11 << 2*10 ));
+	GPIOA->MODER |= ((1 << 20));
+	GPIOA->OTYPER &= ~(1 << 10);    //reset state
+	GPIOA->PUPDR &= ~(0b11<<2*10);    //disable push pull resistor
 
 	//configuring echo pin PA8
 	GPIOA->MODER &= ~((1 << 17) | (1 << 16));
