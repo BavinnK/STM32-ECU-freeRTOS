@@ -49,7 +49,7 @@ typedef struct {
 	uint16_t throttle_percent;
 	uint16_t fuel_percent;
 	FanSpeed_t fan_cmd;
-} ECUData_t;
+} ECUData_T1;
 typedef struct{
 	uint16_t throttle_percent;
 	FanSpeed_t fan_cmd;
@@ -62,7 +62,7 @@ QueueHandle_t xECUDataQueue;
 QueueHandle_t xFanCommandQueue;
 QueueHandle_t xFuelDataQueue;
 SemaphoreHandle_t xHcsr04Semaphore;
-//SemaphoreHandle_t xSPIMutex;
+SemaphoreHandle_t xSPIMutex;
 
 
 /* USER CODE END Includes */
@@ -168,9 +168,9 @@ int main(void)
 //	sprintf(buff1, "Tasks created successfully. Starting\r\n");
 //	HAL_UART_Transmit(&huart2, (uint8_t*) buff1, 52, HAL_MAX_DELAY);
 	xHcsr04Semaphore =  xSemaphoreCreateBinary();
-//	xSPIMutex=			xSemaphoreCreateMutex();
+	xSPIMutex=			xSemaphoreCreateMutex();
 	xADCDataQueue = 	xQueueCreate(1, sizeof(ADCData_t));
-	xECUDataQueue = 	xQueueCreate(1, sizeof(ECUData_t));
+	xECUDataQueue = 	xQueueCreate(1, sizeof(ECUData_T1));
 	xFanCommandQueue=	xQueueCreate(1,sizeof(ECUFANSpeed_t));
 	xFuelDataQueue = 	xQueueCreate(1,sizeof(uint16_t));
 
@@ -181,6 +181,7 @@ int main(void)
 	}
 	xTaskCreate(xTaskReadADC, "ADCdata", 1024, NULL, 4, NULL);		/* Task to read data from LM35DZ, and POT */
 	xTaskCreate(xTaskECULogic, "ECU_print", 1024, NULL, 3, NULL);
+
 	/* Task to send the data from ReadADC task,
 	* basically from the producer tasks, and the logic is inside this task
 	* this task decides to move data from there to there and send commands to other tasks.
@@ -461,14 +462,14 @@ void xTaskReadADC(void *pvParameters) {
 	const TickType_t xFrequency = pdMS_TO_TICKS(20); // Run at 50Hz
 
 	for (;;) {
-		// Wait for the next cycle.
+		//wee will wait for the next cycle
 		vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
-		// Get the latest data from the DMA buffer
+		//getting the latest data from the DMA buffer
 		adc_data.raw_temp = adc_buffer[0];
 		adc_data.raw_throttle = adc_buffer[1];
 
-		// Send the packaged data to the ADC queue, overwriting if full.
+		//sending the packaged data to the ADC queue, overwriting if full.
 		xQueueOverwrite(xADCDataQueue, &adc_data);
 	}
 }
@@ -476,13 +477,13 @@ void xTaskReadADC(void *pvParameters) {
 
 void xTaskECULogic(void *pvParameters) {
 	ADCData_t received_adc={0};
-	ECUData_t current_state_disp={0};
+	ECUData_T1 current_state_disp={0};
 	ECUFANSpeed_t current_fan_state={0};
 	uint16_t fuel_lvl=0;
 	char buffer[100];
 
 	for (;;) {
-		// Wait forever until a message arrives in the ADC queue.
+		// waitin forever until a message arrives in the ADC queue.
 		xQueueReceive(xADCDataQueue, &received_adc, 0);
 		xQueueReceive(xFuelDataQueue, &fuel_lvl, 0);
 
@@ -509,12 +510,12 @@ void xTaskECULogic(void *pvParameters) {
 			current_fan_state.fan_cmd=FAN_SPEED_OFF;
 			current_state_disp.fan_cmd = FAN_SPEED_OFF;
 		}
+
+		sprintf(buffer, "Temp: %dC | Thr: %d%% | Fan Cmd: %d fuel level: %d\n\r",current_state_disp.temperature_c, current_state_disp.throttle_percent,current_state_disp.fan_cmd,current_state_disp.fuel_percent);
+		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),HAL_MAX_DELAY);
+
 		xQueueOverwrite(xECUDataQueue,&fuel_lvl);
 		xQueueOverwrite(xFanCommandQueue,&current_fan_state);
-		sprintf(buffer, "Temp: %dC | Thr: %d%% | Fan Cmd: %d\r\n",current_state_disp.temperature_c, current_state_disp.throttle_percent,current_state_disp.fan_cmd);
-		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),HAL_MAX_DELAY);
-		sprintf(buffer,"fuel level: %d\n\r",fuel_lvl);
-		HAL_UART_Transmit(&huart2, (uint8_t *) buffer, strlen(buffer), HAL_MAX_DELAY);
 		/* run this task 10 times per second */
 		vTaskDelay(pdMS_TO_TICKS(100));
 
@@ -562,27 +563,27 @@ void xTaskHcsr04(void *pvParameters){
 }
 
 void xTaskTFTdraw(void *pvParameters){
-	ECUData_t recived_data={0};
+	ECUData_T1 recived_data={0};
 
 	//ILI9341_Init();
-	//if(xSemaphoreTake(xSPIMutex,portMAX_DELAY)==pdTRUE){
-	ILI9341_Init();
-	ILI9341_Fill_Screen(BLACK);
+	if(xSemaphoreTake(xSPIMutex,portMAX_DELAY)==pdTRUE){
+		ILI9341_Init();
 
+		ILI9341_Set_Rotation(SCREEN_HORIZONTAL_2);
 		ILI9341_Fill_Screen(BLACK);//clear screen
-		ILI9341_Draw_Text("BAVREX ENGINEERING", 40, 100, LIGHTGREY, 2, BLACK);
+		ILI9341_Draw_Text("BAVREX ENGINEERING", 40, 100, BLUE, 2, BLACK);
 
-		ILI9341_Draw_Text("ECU Online", 90, 130, GREEN, 1, BLACK);
-		//xSemaphoreGive(xSPIMutex);
-	//}
+		ILI9341_Draw_Text("ECU Online", 90, 130, GREEN, 2, BLACK);
+		xSemaphoreGive(xSPIMutex);
+	}
 	vTaskDelay(2500);//2.5 sec delay
 
 	for(;;){
 		if(xQueueReceive(xECUDataQueue, &recived_data, pdMS_TO_TICKS(50))==pdTRUE){
 			char buff[60];
-		//	if(xSemaphoreTake(xSPIMutex,portMAX_DELAY)==pdTRUE){
+			if(xSemaphoreTake(xSPIMutex,portMAX_DELAY)==pdTRUE){
 				ILI9341_Fill_Screen(BLACK);//clear the screen
-				sprintf(buff,"Oil Temp: %dC",recived_data.temperature_c);
+				sprintf(buff,"Oil Temp: %dC",recived_data.fan_cmd);
 				ILI9341_Draw_Text(buff, 10, 50, WHITE, 2, BLACK);
 
 				//we have the throttle in percent but we need it in RPM
@@ -590,19 +591,19 @@ void xTaskTFTdraw(void *pvParameters){
 				sprintf(buff,"RPM: %d",rpm);
 				ILI9341_Draw_Text(buff, 10, 80, WHITE, 2, BLACK);
 
-				sprintf(buff,"Fuel: %d",recived_data.fuel_percent);
+				sprintf(buff,"Fuel Percent: %d",recived_data.temperature_c);
 				ILI9341_Draw_Text(buff, 10, 110, WHITE, 2, BLACK);
 
-				sprintf(buff,"Fan State: %d",recived_data.fan_cmd);
+				sprintf(buff,"Fan State: %d",recived_data.fuel_percent);
 				ILI9341_Draw_Text(buff, 10, 140, WHITE, 2, BLACK);
 
 				//now when we are done with the screen, we hand over the mutex for other tasks, but since no other task uses it its not neccesary
 				//but its a good practice todo and use mutex
-				vTaskDelay(pdMS_TO_TICKS(2000));
-				//xSemaphoreGive(xSPIMutex);
+				vTaskDelay(pdMS_TO_TICKS(1000));
+				xSemaphoreGive(xSPIMutex);
 			}
 
-		//}
+		}
 	}
 }
 
