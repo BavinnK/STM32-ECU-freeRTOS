@@ -15,6 +15,8 @@ RM := rm -rf
 -include Core/Startup/subdir.mk
 -include Core/Src/ILI9341/subdir.mk
 -include Core/Src/subdir.mk
+-include Core/MyDRIVERS/DMA/subdir.mk
+-include Core/MyDRIVERS/ADC/subdir.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)

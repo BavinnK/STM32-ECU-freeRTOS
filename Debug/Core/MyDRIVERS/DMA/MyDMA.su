@@ -1,0 +1,3 @@
+../Core/MyDRIVERS/DMA/MyDMA.c:2:20:DMA_config	16	static
+../Core/MyDRIVERS/DMA/MyDMA.c:11:20:clear_flags	16	static
+../Core/MyDRIVERS/DMA/MyDMA.c:61:6:DMAx_init	16	static

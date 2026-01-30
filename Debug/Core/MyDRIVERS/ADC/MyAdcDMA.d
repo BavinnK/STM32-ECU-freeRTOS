@@ -1,0 +1,1 @@
+Core/MyDRIVERS/ADC/MyAdcDMA.o: ../Core/MyDRIVERS/ADC/MyAdcDMA.c

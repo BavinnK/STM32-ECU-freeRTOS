@@ -1,3 +1,5 @@
+"./Core/MyDRIVERS/ADC/MyAdcDMA.o"
+"./Core/MyDRIVERS/DMA/MyDMA.o"
 "./Core/Src/ILI9341/ILI9341_GFX.o"
 "./Core/Src/ILI9341/ILI9341_STM32_Driver.o"
 "./Core/Src/MyAdc.o"

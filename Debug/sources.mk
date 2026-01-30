@@ -22,6 +22,8 @@ C_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+Core/MyDRIVERS/ADC \
+Core/MyDRIVERS/DMA \
 Core/Src/ILI9341 \
 Core/Src \
 Core/Startup \
