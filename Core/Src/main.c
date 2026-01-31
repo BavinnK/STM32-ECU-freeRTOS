@@ -35,6 +35,7 @@
 #include "MyPwm.h"
 #include "MyRelay.h"
 #include "MyAdcDMA.h"
+#include "MyUsart.h"
 //#include "MyUsart2.h"
 #include "Myhcsr04.h"
 #include "stdio.h"
@@ -94,7 +95,7 @@ volatile uint16_t adc_buffer[2];
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_USART2_UART_Init(void);
+
 
 static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
@@ -142,7 +143,7 @@ int main(void) {
 
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
-	MX_USART2_UART_Init();
+
 
 	MX_SPI1_Init();
 	/* USER CODE BEGIN 2 */
@@ -168,7 +169,7 @@ int main(void) {
 	dma_config.PERIPHERAL_DATA_SIZE=PER_HALF_WORD;
 	dma_config.PRIORITY=PRIOTITY_MED;
 	adc_dma_init(ADC1, &adc_config, DMA2, &dma_config, 2);
-
+	Usart2_init(115200);
 	NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
 	NVIC_SetPriority(TIM1_CC_IRQn, 5);
 	NVIC_EnableIRQ(TIM1_CC_IRQn);
@@ -295,31 +296,7 @@ static void MX_SPI1_Init(void) {
 
 }
 
-static void MX_USART2_UART_Init(void) {
 
-	/* USER CODE BEGIN USART2_Init 0 */
-
-	/* USER CODE END USART2_Init 0 */
-
-	/* USER CODE BEGIN USART2_Init 1 */
-
-	/* USER CODE END USART2_Init 1 */
-	huart2.Instance = USART2;
-	huart2.Init.BaudRate = 115200;
-	huart2.Init.WordLength = UART_WORDLENGTH_8B;
-	huart2.Init.StopBits = UART_STOPBITS_1;
-	huart2.Init.Parity = UART_PARITY_NONE;
-	huart2.Init.Mode = UART_MODE_TX_RX;
-	huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-	huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-	if (HAL_UART_Init(&huart2) != HAL_OK) {
-		Error_Handler();
-	}
-	/* USER CODE BEGIN USART2_Init 2 */
-
-	/* USER CODE END USART2_Init 2 */
-
-}
 
 /**
  * @brief GPIO Initialization Function
@@ -408,7 +385,7 @@ void xTaskECULogic(void *pvParameters) {
 	ECUData_T1 current_state_disp = { 0 };
 	ECUFANSpeed_t current_fan_state = { 0 };
 	uint16_t fuel_lvl = 0;
-	char buffer[100];
+
 
 	for (;;) {
 		// waitin forever until a message arrives in the ADC queue.
@@ -437,13 +414,12 @@ void xTaskECULogic(void *pvParameters) {
 			current_state_disp.fan_cmd = FAN_SPEED_OFF;
 		}
 
-		sprintf(buffer,
-				"Temp: %dC | Thr: %d%% | Fan Cmd: %d fuel level: %d\n\r",
+
+		printf("Temp: %dC | Thr: %d%% | Fan Cmd: %d fuel level: %d\n\r",
 				current_state_disp.temperature_c,
 				current_state_disp.throttle_percent, current_state_disp.fan_cmd,
 				current_state_disp.fuel_percent);
-		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),
-				HAL_MAX_DELAY);
+
 
 		xQueueOverwrite(xECUDataQueue, &fuel_lvl);
 		xQueueOverwrite(xFanCommandQueue, &current_fan_state);
