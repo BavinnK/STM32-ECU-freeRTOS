@@ -24,6 +24,7 @@ C_DEPS :=
 SUBDIRS := \
 Core/MyDRIVERS/ADC \
 Core/MyDRIVERS/DMA \
+Core/MyDRIVERS/GPIO \
 Core/Src/ILI9341 \
 Core/Src \
 Core/Startup \

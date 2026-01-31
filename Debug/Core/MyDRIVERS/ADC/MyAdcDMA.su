@@ -1,0 +1,4 @@
+../Core/MyDRIVERS/ADC/MyAdcDMA.c:3:29:channel_setup	16	static
+../Core/MyDRIVERS/ADC/MyAdcDMA.c:17:20:adc_setup	16	static
+../Core/MyDRIVERS/ADC/MyAdcDMA.c:31:20:channel_adc	16	static
+../Core/MyDRIVERS/ADC/MyAdcDMA.c:42:6:adc_dma_init	48	static

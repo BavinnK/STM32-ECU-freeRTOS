@@ -4,7 +4,7 @@
 #include "stdint.h"
 #include "stm32f446xx.h"
 #include "gpiox.h"
-#include "dma/MyDMA.h"
+#include "MyDMA.h"
 typedef enum{
 	ADCx_CHANNEL_0=0,
 	ADCx_CHANNEL_1=1,

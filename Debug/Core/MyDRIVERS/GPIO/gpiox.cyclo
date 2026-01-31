@@ -1,0 +1,4 @@
+../Core/MyDRIVERS/GPIO/gpiox.c:3:20:port_init	4
+../Core/MyDRIVERS/GPIO/gpiox.c:11:6:gpio_init	1
+../Core/MyDRIVERS/GPIO/gpiox.c:26:6:gpio_set	1
+../Core/MyDRIVERS/GPIO/gpiox.c:30:6:gpio_reset	1

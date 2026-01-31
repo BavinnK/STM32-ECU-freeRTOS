@@ -1,0 +1,4 @@
+../Core/MyDRIVERS/GPIO/gpiox.c:3:20:port_init	16	static
+../Core/MyDRIVERS/GPIO/gpiox.c:11:6:gpio_init	16	static
+../Core/MyDRIVERS/GPIO/gpiox.c:26:6:gpio_set	16	static
+../Core/MyDRIVERS/GPIO/gpiox.c:30:6:gpio_reset	16	static
