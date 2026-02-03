@@ -86,7 +86,7 @@
 #include "main.h"
 #include "stm32f4xx_hal.h"
 #include "FreeRTOS.h"
-
+#include "MySPI2.h"
 
 #define ILI9341_SCREEN_HEIGHT 240 
 #define ILI9341_SCREEN_WIDTH 	320

@@ -1,0 +1,6 @@
+../Core/MyDRIVERS/SPI/MySPI2.c:3:20:set_format	16	static
+../Core/MyDRIVERS/SPI/MySPI2.c:13:24:set_freq	40	static
+../Core/MyDRIVERS/SPI/MySPI2.c:28:6:SPI2_init	56	static
+../Core/MyDRIVERS/SPI/MySPI2.c:73:6:SPI2_Transmit	16	static
+../Core/MyDRIVERS/SPI/MySPI2.c:79:6:SPI2_pin_select	16	static
+../Core/MyDRIVERS/SPI/MySPI2.c:82:6:SPI2_pin_deselect	16	static

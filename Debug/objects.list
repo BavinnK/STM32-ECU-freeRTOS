@@ -2,6 +2,7 @@
 "./Core/MyDRIVERS/CLOCK/clock.o"
 "./Core/MyDRIVERS/DMA/MyDMA.o"
 "./Core/MyDRIVERS/GPIO/gpiox.o"
+"./Core/MyDRIVERS/SPI/MySPI2.o"
 "./Core/MyDRIVERS/USART/MyUsart.o"
 "./Core/MyDRIVERS/USART/RingBuffer.o"
 "./Core/MyDRIVERS/USART/retarget.o"
