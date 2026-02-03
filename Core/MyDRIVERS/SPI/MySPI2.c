@@ -25,9 +25,9 @@ static inline uint32_t set_freq(uint32_t freq){
 	}
 	return best_PSC;
 }
-void SPI2_init(GPIO_TypeDef *port,uint8_t CS,uint32_t frequency_Mhz,spi_frame_format format){
+void SPI2_init(GPIO_TypeDef *portCS,uint8_t CS,GPIO_TypeDef *portDC,uint8_t DC,GPIO_TypeDef *portRST,uint8_t RST,uint32_t frequency_Mhz,spi_frame_format format){
 
-	gpio_set_up config_spi_MOSI,config_spi_MISO,config_spi_SCLK,config_spi_CS;
+	gpio_set_up config_spi_MOSI,config_spi_MISO,config_spi_SCLK,config_spi_CS,config_spi_DC,config_spi_RST;
 	config_spi_MOSI.PINx=1;//PC1
 	config_spi_MOSI.MODERx=GPIOx_MODER_AF;
 	config_spi_MOSI.OSPEEDRx=GPIOx_OSPEEDR_HIGH_SP;
@@ -46,16 +46,31 @@ void SPI2_init(GPIO_TypeDef *port,uint8_t CS,uint32_t frequency_Mhz,spi_frame_fo
 	config_spi_SCLK.OTYPERx=GPIOx_OTYPER_PP;
 	config_spi_SCLK.PUPDRx=GPIOx_PUPDR_NONE;
 
-	config_spi_CS.PINx=CS;//user provided pin
+	config_spi_CS.PINx=CS;//user provided CS PIN
 	config_spi_CS.MODERx=GPIOx_MODER_OUTPUT;
 	config_spi_CS.OSPEEDRx=GPIOx_OSPEEDR_HIGH_SP;
 	config_spi_CS.OTYPERx=GPIOx_OTYPER_PP;
 	config_spi_CS.PUPDRx=GPIOx_PUPDR_NONE;
 
+	config_spi_CS.PINx=DC;//user provided DC PIN
+	config_spi_CS.MODERx=GPIOx_MODER_OUTPUT;
+	config_spi_CS.OSPEEDRx=GPIOx_OSPEEDR_HIGH_SP;
+	config_spi_CS.OTYPERx=GPIOx_OTYPER_PP;
+	config_spi_CS.PUPDRx=GPIOx_PUPDR_NONE;
+
+	config_spi_CS.PINx=RST;//user provided RST PIN
+	config_spi_CS.MODERx=GPIOx_MODER_OUTPUT;
+	config_spi_CS.OSPEEDRx=GPIOx_OSPEEDR_HIGH_SP;
+	config_spi_CS.OTYPERx=GPIOx_OTYPER_PP;
+	config_spi_CS.PUPDRx=GPIOx_PUPDR_NONE;
+
+
 	gpio_init(GPIOC, &config_spi_MOSI);
 	gpio_init(GPIOC, &config_spi_MISO);
 	gpio_init(GPIOB, &config_spi_SCLK);
-	gpio_init(port, &config_spi_CS);
+	gpio_init(portCS, &config_spi_CS);
+	gpio_init(portDC, &config_spi_DC);
+	gpio_init(portRST, &config_spi_RST);
 
 	GPIOC->AFR[0]&=~((0b1111<<4*1)|(0b1111<<4*2));
 	GPIOB->AFR[1]&=~(0b1111<<4*(10-8));
@@ -70,15 +85,15 @@ void SPI2_init(GPIO_TypeDef *port,uint8_t CS,uint32_t frequency_Mhz,spi_frame_fo
 	SPI2->CR1|=(3<<8)|(1<<6);//we set both SSM AND SSI to one, basicallly we tell the spi hey i wanna handle the chip select dont worry, then enable the prepherial
 
 }
-void SPI2_Transmit(GPIO_TypeDef *port,uint8_t CS,uint8_t data){
+void SPI2_Transmit(uint8_t data){
 	while(!(SPI2->SR&(1<<1)));//WAIT UNTIL THE TRANSMIT BUFFER IS EMPTY, afterwards send the data
 	SPI2->DR=data;
 	while(SPI2->SR&(1<<7));//wait until spi2 is no longer busy
 	(void)SPI2->DR;//clear the DR cuz we only send data we dont wanna get any data
 }
-void SPI2_pin_select(GPIO_TypeDef *port,uint8_t CS){
-	gpio_reset(port, CS);//low
+void SPI2_pin_LOW(GPIO_TypeDef *port,uint8_t pin){
+	gpio_reset(port, pin);//low
 }
-void SPI2_pin_deselect(GPIO_TypeDef *port,uint8_t CS){
-	gpio_set(port, CS);//high
+void SPI2_pin_HIGH(GPIO_TypeDef *port,uint8_t pin){
+	gpio_set(port, pin);//high
 }

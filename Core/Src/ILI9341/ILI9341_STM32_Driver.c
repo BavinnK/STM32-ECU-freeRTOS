@@ -88,41 +88,50 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-/* Global Variables ------------------------------------------------------------------*/
+/* Global Variables ------------------------------------------------------------------ */
 volatile uint16_t LCD_HEIGHT = ILI9341_SCREEN_HEIGHT;
 volatile uint16_t LCD_WIDTH	 = ILI9341_SCREEN_WIDTH;
 
 /* Initialize SPI */
 void ILI9341_SPI_Init(void)
 {
-																				//GPIO INIT
+//GPIO INIT
 //HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);	//CS OFF
-SPI2_pin_select(LCD_CS_PORT, LCD_CS_PIN);//new
+SPI2_pin_LOW(LCD_CS_PORT, LCD_CS_PIN);//new
 }
 
 /*Send data (char) to LCD*/
 void ILI9341_SPI_Send(unsigned char SPI_Data)
 {
-HAL_SPI_Transmit(&hspi1, &SPI_Data, 1, 1);
-
+//HAL_SPI_Transmit(&hspi1, &SPI_Data, 1, 1);
+SPI2_Transmit(SPI_Data);
 }
-
 /* Send command (char) to LCD */
 void ILI9341_Write_Command(uint8_t Command)
 {
-HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
-HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_RESET);	
+//HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
+//HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_RESET);
+//ILI9341_SPI_Send(Command);
+//HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
+
+SPI2_pin_LOW(LCD_CS_PORT, LCD_CS_PIN);
+SPI2_pin_LOW(LCD_DC_PORT, LCD_DC_PIN);
 ILI9341_SPI_Send(Command);
-HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);		
+SPI2_pin_HIGH(LCD_CS_PORT, LCD_CS_PIN);
 }
 
 /* Send Data (char) to LCD */
 void ILI9341_Write_Data(uint8_t Data)
 {
-HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_SET);	
-HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
-ILI9341_SPI_Send(Data);	
-HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
+//HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_SET);
+//HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
+//ILI9341_SPI_Send(Data);
+//HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
+
+SPI2_pin_HIGH(LCD_DC_PORT, LCD_DC_PIN);
+SPI2_pin_LOW(LCD_CS_PORT, LCD_CS_Pin);
+ILI9341_SPI_Send(Data);
+SPI2_pin_HIGH(LCD_CS_PORT, LCD_CS_PIN);
 }
 
 /* Set Address - Location block - to draw into */
