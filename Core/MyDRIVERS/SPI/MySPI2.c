@@ -85,15 +85,17 @@ void SPI2_init(GPIO_TypeDef *portCS,uint8_t CS,GPIO_TypeDef *portDC,uint8_t DC,G
 	SPI2->CR1|=(3<<8)|(1<<6);//we set both SSM AND SSI to one, basicallly we tell the spi hey i wanna handle the chip select dont worry, then enable the prepherial
 
 }
-void SPI2_Transmit(uint8_t data){
-	while(!(SPI2->SR&(1<<1)));//WAIT UNTIL THE TRANSMIT BUFFER IS EMPTY, afterwards send the data
-	SPI2->DR=data;
+void SPI2_Transmit(void* data,uint16_t size){
+	for(int i=0;i<size;i++){
+		while(!(SPI2->SR&(1<<1)));//WAIT UNTIL THE TRANSMIT BUFFER IS EMPTY, afterwards send the data
+		SPI2->DR=((uint8_t *)(data))[i];
+	}
 	while(SPI2->SR&(1<<7));//wait until spi2 is no longer busy
 	(void)SPI2->DR;//clear the DR cuz we only send data we dont wanna get any data
 }
-void SPI2_pin_LOW(GPIO_TypeDef *port,uint8_t pin){
+void SPI2_pin_LOW(GPIO_TypeDef *port,uint16_t pin){
 	gpio_reset(port, pin);//low
 }
-void SPI2_pin_HIGH(GPIO_TypeDef *port,uint8_t pin){
+void SPI2_pin_HIGH(GPIO_TypeDef *port,uint16_t pin){
 	gpio_set(port, pin);//high
 }
