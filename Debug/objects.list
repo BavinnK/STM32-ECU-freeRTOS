@@ -1,4 +1,5 @@
 "./Core/MyDRIVERS/ADC/MyAdcDMA.o"
+"./Core/MyDRIVERS/CLOCK/clock.o"
 "./Core/MyDRIVERS/DMA/MyDMA.o"
 "./Core/MyDRIVERS/GPIO/gpiox.o"
 "./Core/MyDRIVERS/USART/MyUsart.o"

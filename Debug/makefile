@@ -18,6 +18,7 @@ RM := rm -rf
 -include Core/MyDRIVERS/USART/subdir.mk
 -include Core/MyDRIVERS/GPIO/subdir.mk
 -include Core/MyDRIVERS/DMA/subdir.mk
+-include Core/MyDRIVERS/CLOCK/subdir.mk
 -include Core/MyDRIVERS/ADC/subdir.mk
 -include objects.mk
 

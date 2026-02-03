@@ -23,6 +23,7 @@ C_DEPS :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 Core/MyDRIVERS/ADC \
+Core/MyDRIVERS/CLOCK \
 Core/MyDRIVERS/DMA \
 Core/MyDRIVERS/GPIO \
 Core/MyDRIVERS/USART \
