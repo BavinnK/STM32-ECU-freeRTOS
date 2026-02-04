@@ -29,6 +29,7 @@ Core/MyDRIVERS/GPIO \
 Core/MyDRIVERS/SPI \
 Core/MyDRIVERS/USART \
 Core/Src/ILI9341 \
+Core/Src/LEGACY_src_drivers \
 Core/Src \
 Core/Startup \
 Core/ThirdParty/FreeRTOS/Source \

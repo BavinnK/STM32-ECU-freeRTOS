@@ -1,0 +1,5 @@
+../Core/Src/LEGACY_src_drivers/MyHcsr04.c:10:6:hcsr04_init	1
+../Core/Src/LEGACY_src_drivers/MyHcsr04.c:41:6:TIM1_CC_IRQHandler	6
+../Core/Src/LEGACY_src_drivers/MyHcsr04.c:73:6:delay_us_hc	2
+../Core/Src/LEGACY_src_drivers/MyHcsr04.c:78:6:hcsr04_trig_hc	1
+../Core/Src/LEGACY_src_drivers/MyHcsr04.c:83:11:hcsr04_get_pulse_width	1

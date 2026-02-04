@@ -13,6 +13,7 @@ RM := rm -rf
 -include Core/ThirdParty/FreeRTOS/portable/subdir.mk
 -include Core/ThirdParty/FreeRTOS/Source/subdir.mk
 -include Core/Startup/subdir.mk
+-include Core/Src/LEGACY_src_drivers/subdir.mk
 -include Core/Src/ILI9341/subdir.mk
 -include Core/Src/subdir.mk
 -include Core/MyDRIVERS/USART/subdir.mk

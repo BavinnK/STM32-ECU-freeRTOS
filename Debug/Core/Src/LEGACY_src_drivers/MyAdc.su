@@ -1,0 +1,2 @@
+../Core/Src/LEGACY_src_drivers/MyAdc.c:4:6:adc_init	16	static
+../Core/Src/LEGACY_src_drivers/MyAdc.c:32:10:adc_read	16	static

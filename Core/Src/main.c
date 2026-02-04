@@ -94,7 +94,7 @@ volatile uint16_t adc_buffer[2];
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-static void MX_GPIO_Init(void);
+
 
 
 /* USER CODE BEGIN PFP */
@@ -141,7 +141,7 @@ int main(void) {
 	/* USER CODE END SysInit */
 
 	/* Initialize all configured peripherals */
-	MX_GPIO_Init();
+
 
 
 
@@ -271,58 +271,6 @@ void SystemClock_Config(void) {
  * @param None
  * @retval None
  */
-static void MX_GPIO_Init(void) {
-	GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-	/* USER CODE BEGIN MX_GPIO_Init_1 */
-
-	/* USER CODE END MX_GPIO_Init_1 */
-
-	/* GPIO Ports Clock Enable */
-	__HAL_RCC_GPIOC_CLK_ENABLE();
-	__HAL_RCC_GPIOH_CLK_ENABLE();
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-	__HAL_RCC_GPIOB_CLK_ENABLE();
-
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_RESET);
-
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(LCD_RST_GPIO_Port, LCD_RST_Pin, GPIO_PIN_RESET);
-
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_RESET);
-
-	/*Configure GPIO pin : B1_Pin */
-	GPIO_InitStruct.Pin = B1_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
-
-	/*Configure GPIO pin : LCD_CS_Pin */
-	GPIO_InitStruct.Pin = LCD_CS_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(LCD_CS_GPIO_Port, &GPIO_InitStruct);
-
-	/*Configure GPIO pin : LCD_RST_Pin */
-	GPIO_InitStruct.Pin = LCD_RST_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(LCD_RST_GPIO_Port, &GPIO_InitStruct);
-
-	/*Configure GPIO pin : LCD_DC_Pin */
-	GPIO_InitStruct.Pin = LCD_DC_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(LCD_DC_GPIO_Port, &GPIO_InitStruct);
-
-	/* USER CODE BEGIN MX_GPIO_Init_2 */
-
-	/* USER CODE END MX_GPIO_Init_2 */
-}
 
 /* USER CODE BEGIN 4 */
 
