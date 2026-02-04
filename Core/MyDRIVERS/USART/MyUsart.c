@@ -9,7 +9,7 @@ static inline uint32_t set_baud(uint32_t baud){
 	 * USARTDIV=(fclk/(16*baud))
 	 * the fclk is the frequency of ABP1 BUS which in my case it's 42 Mhz
 	 */
-	if(baud==9600) 			return 0x1117;
+	if(baud==9600) 			return 0x1258;
 	else if(baud==14400) 	return 0x0B60;
 	else if(baud==19200) 	return 0x08B9;
 	else if(baud==38400) 	return 0x045D;
@@ -42,8 +42,7 @@ void Usart2_init(uint32_t baudRate){
 
 	USART2->CR1|=(1<<2)|(1<<3)|(1<<13)|(1<<5);
 	USART2->BRR=set_baud(baudRate);
-	NVIC_EnableIRQ(USART2_IRQn);//enable the USART INT into the NVIC handler
-}
+	}
 void Usart2_SendByte(char ch){
 	bool isFull=RingBuffer_Write(&usart2_ring_TX, ch);
 	if(isFull){

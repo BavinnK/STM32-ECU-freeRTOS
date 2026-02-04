@@ -136,8 +136,8 @@ int main(void) {
 	/* USER CODE END Init */
 
 	/* Configure the system clock */
-	//SystemClock_Config();
-	systemClock_180MHz();
+	SystemClock_Config();
+
 	/* USER CODE BEGIN SysInit */
 
 	/* USER CODE END SysInit */
@@ -153,7 +153,7 @@ int main(void) {
 	//adc_init();
 	relay_init();
 	hcsr04_init();
-
+	//systemClock_180MHz();
 	adc_config_t adc_config;
 	adc_config.channel[0]=ADCx_CHANNEL_0;
 	adc_config.channel[1]=ADCx_CHANNEL_1;
@@ -171,10 +171,12 @@ int main(void) {
 	dma_config.PERIPHERAL_DATA_SIZE=PER_HALF_WORD;
 	dma_config.PRIORITY=PRIOTITY_MED;
 	adc_dma_init(ADC1, &adc_config, DMA2, &dma_config, 2);
-	Usart2_init(115200);
+	Usart2_init(9600);
 	NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
 	NVIC_SetPriority(TIM1_CC_IRQn, 5);
 	NVIC_EnableIRQ(TIM1_CC_IRQn);
+	NVIC_SetPriority(USART2_IRQn,6);
+	NVIC_EnableIRQ(USART2_IRQn);
 
 
 	//char buff1[50];
@@ -223,8 +225,64 @@ int main(void) {
 	/* USER CODE END 3 */
 }
 
+/**
+ * @brief System Clock Configuration
+ * @retval None
+ */
+void SystemClock_Config(void) {
+	RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
+	RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
+
+	/** Configure the main internal regulator output voltage
+	 */
+	__HAL_RCC_PWR_CLK_ENABLE();
+	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
+
+	/** Initializes the RCC Oscillators according to the specified parameters
+	 * in the RCC_OscInitTypeDef structure.
+	 */
+	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+	RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+	RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+	RCC_OscInitStruct.PLL.PLLM = 8;
+	RCC_OscInitStruct.PLL.PLLN = 90;
+	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+	RCC_OscInitStruct.PLL.PLLQ = 2;
+	RCC_OscInitStruct.PLL.PLLR = 2;
+	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
+		Error_Handler();
+	}
+
+	/** Initializes the CPU, AHB and APB buses clocks
+	 */
+	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+			| RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {
+		Error_Handler();
+	}
+}
 
 
+
+/**
+ * @brief GPIO Initialization Function
+ * @param None
+ * @retval None
+ */
+
+/* USER CODE BEGIN 4 */
+
+// ... your RTOS task functions will also go here ...
+/**
+ * @brief  xTaskReadADC: Periodically reads the DMA buffer and sends raw sensor data to a queue.
+ */
 void xTaskReadADC(void *pvParameters) {
 	ADCData_t adc_data;
 	TickType_t xLastWakeTime = xTaskGetTickCount();
@@ -278,10 +336,7 @@ void xTaskECULogic(void *pvParameters) {
 		}
 
 
-		printf("Temp: %dC | Thr: %d%% | Fan Cmd: %d fuel level: %d\n\r",
-				current_state_disp.temperature_c,
-				current_state_disp.throttle_percent, current_state_disp.fan_cmd,
-				current_state_disp.fuel_percent);
+		Usart2_SendString("sup baby");
 
 
 		xQueueOverwrite(xECUDataQueue, &fuel_lvl);

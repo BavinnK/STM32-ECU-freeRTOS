@@ -1,6 +1,5 @@
-../Drivers/CMSIS/Include/core_cm4.h:1684:22:__NVIC_EnableIRQ	16	static,ignoring_inline_asm
 ../Core/MyDRIVERS/USART/MyUsart.c:3:24:set_baud	16	static
 ../Core/MyDRIVERS/USART/MyUsart.c:23:6:Usart2_init	40	static
-../Core/MyDRIVERS/USART/MyUsart.c:47:6:Usart2_SendByte	24	static
-../Core/MyDRIVERS/USART/MyUsart.c:55:6:Usart2_SendString	16	static
-../Core/MyDRIVERS/USART/MyUsart.c:61:6:USART2_IRQHandler	16	static
+../Core/MyDRIVERS/USART/MyUsart.c:46:6:Usart2_SendByte	24	static
+../Core/MyDRIVERS/USART/MyUsart.c:54:6:Usart2_SendString	16	static
+../Core/MyDRIVERS/USART/MyUsart.c:60:6:USART2_IRQHandler	16	static
