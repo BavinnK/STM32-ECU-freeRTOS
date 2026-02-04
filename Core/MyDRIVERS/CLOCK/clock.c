@@ -10,7 +10,7 @@ void systemClock_180MHz(void){
 	while(!(PWR->CSR&(1<<16)));		//wait until overdrive is enabled
 	PWR->CR|=(1<<17);				//after overdrive is enabled then we have to enable the switch overdrive
 	while((PWR->CSR&(1<<17)));		//wait until overdrive switching is enabled
-	RCC->CFGR&=~(0b111111<<10);	//now we clear APB1 AND APB2 bits why cuz those two bus cant run at 180 Mhz
+	RCC->CFGR&=~(0b111111<<10);		//now we clear APB1 AND APB2 bits why cuz those two bus cant run at 180 Mhz
 	RCC->CFGR|=(4<<13);				//APB2 is high speed bus runs at 90 Mhz we divide the fclk by 2 which is 180/2=90
 	RCC->CFGR|=(5<<10);				//APB1 is low speed bus runs at 45Mhz so we have to divide the fclk by 4 to get 45 which is 180/4=45
 	/*
@@ -41,4 +41,5 @@ void systemClock_180MHz(void){
 	RCC->CFGR&=~(2);				//clear the SW bits
 	RCC->CFGR|=2;					//switch to PLL from HSI
 	while(!(RCC->CFGR&(1<<3)));		//wait until the switching is done
+	SystemCoreClock=180000000;		//update the system clock to 180Mhz
 }
