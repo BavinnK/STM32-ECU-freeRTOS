@@ -484,7 +484,7 @@ Discarded input sections
  .text.ILI9341_Draw_Filled_Rectangle_Coord
                 0x00000000       0xbc ./Core/Src/ILI9341/ILI9341_GFX.o
  .text.ILI9341_Draw_Image
-                0x00000000      0x34c ./Core/Src/ILI9341/ILI9341_GFX.o
+                0x00000000      0x328 ./Core/Src/ILI9341/ILI9341_GFX.o
  .debug_macro   0x00000000      0xad8 ./Core/Src/ILI9341/ILI9341_GFX.o
  .debug_macro   0x00000000       0x28 ./Core/Src/ILI9341/ILI9341_GFX.o
  .debug_macro   0x00000000       0x22 ./Core/Src/ILI9341/ILI9341_GFX.o
@@ -6151,7 +6151,7 @@ LOAD C:/Users/pc/Documents/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32
 LOAD C:/Users/pc/Documents/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a
 LOAD C:/Users/pc/Documents/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a
 
-.debug_info     0x00000000    0x11cbb
+.debug_info     0x00000000    0x1178d
  .debug_info    0x00000000      0x993 ./Core/MyDRIVERS/ADC/MyAdcDMA.o
  .debug_info    0x00000993      0x4e9 ./Core/MyDRIVERS/DMA/MyDMA.o
  .debug_info    0x00000e7c      0x4b0 ./Core/MyDRIVERS/GPIO/gpiox.o
@@ -6159,31 +6159,31 @@ LOAD C:/Users/pc/Documents/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32
  .debug_info    0x00001a94      0xa4d ./Core/MyDRIVERS/USART/MyUsart.o
  .debug_info    0x000024e1      0x1bf ./Core/MyDRIVERS/USART/RingBuffer.o
  .debug_info    0x000026a0       0xee ./Core/MyDRIVERS/USART/retarget.o
- .debug_info    0x0000278e      0xd67 ./Core/Src/ILI9341/ILI9341_GFX.o
- .debug_info    0x000034f5      0x5d2 ./Core/Src/ILI9341/ILI9341_STM32_Driver.o
- .debug_info    0x00003ac7      0x555 ./Core/Src/MyHcsr04.o
- .debug_info    0x0000401c      0x347 ./Core/Src/MyRelay.o
- .debug_info    0x00004363     0x1efc ./Core/Src/main.o
- .debug_info    0x0000625f      0xf11 ./Core/Src/stm32f4xx_hal_msp.o
- .debug_info    0x00007170       0xd8 ./Core/Src/stm32f4xx_it.o
- .debug_info    0x00007248      0x6a3 ./Core/Src/syscalls.o
- .debug_info    0x000078eb      0x168 ./Core/Src/sysmem.o
- .debug_info    0x00007a53      0x54a ./Core/Src/system_stm32f4xx.o
- .debug_info    0x00007f9d       0x30 ./Core/Startup/startup_stm32f446retx.o
- .debug_info    0x00007fcd      0x2aa ./Core/ThirdParty/FreeRTOS/Source/list.o
- .debug_info    0x00008277     0x167d ./Core/ThirdParty/FreeRTOS/Source/queue.o
- .debug_info    0x000098f4     0x2382 ./Core/ThirdParty/FreeRTOS/Source/tasks.o
- .debug_info    0x0000bc76      0xe95 ./Core/ThirdParty/FreeRTOS/Source/timers.o
- .debug_info    0x0000cb0b      0x5d7 ./Core/ThirdParty/FreeRTOS/portable/heap_4.o
- .debug_info    0x0000d0e2      0x581 ./Core/ThirdParty/FreeRTOS/portable/port.o
- .debug_info    0x0000d663      0x99a ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
- .debug_info    0x0000dffd      0xd75 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
- .debug_info    0x0000ed72      0x70b ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
- .debug_info    0x0000f47d      0x8ed ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
- .debug_info    0x0000fd6a      0x956 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
- .debug_info    0x000106c0     0x15fb ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
+ .debug_info    0x0000278e      0x839 ./Core/Src/ILI9341/ILI9341_GFX.o
+ .debug_info    0x00002fc7      0x5d2 ./Core/Src/ILI9341/ILI9341_STM32_Driver.o
+ .debug_info    0x00003599      0x555 ./Core/Src/MyHcsr04.o
+ .debug_info    0x00003aee      0x347 ./Core/Src/MyRelay.o
+ .debug_info    0x00003e35     0x1efc ./Core/Src/main.o
+ .debug_info    0x00005d31      0xf11 ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_info    0x00006c42       0xd8 ./Core/Src/stm32f4xx_it.o
+ .debug_info    0x00006d1a      0x6a3 ./Core/Src/syscalls.o
+ .debug_info    0x000073bd      0x168 ./Core/Src/sysmem.o
+ .debug_info    0x00007525      0x54a ./Core/Src/system_stm32f4xx.o
+ .debug_info    0x00007a6f       0x30 ./Core/Startup/startup_stm32f446retx.o
+ .debug_info    0x00007a9f      0x2aa ./Core/ThirdParty/FreeRTOS/Source/list.o
+ .debug_info    0x00007d49     0x167d ./Core/ThirdParty/FreeRTOS/Source/queue.o
+ .debug_info    0x000093c6     0x2382 ./Core/ThirdParty/FreeRTOS/Source/tasks.o
+ .debug_info    0x0000b748      0xe95 ./Core/ThirdParty/FreeRTOS/Source/timers.o
+ .debug_info    0x0000c5dd      0x5d7 ./Core/ThirdParty/FreeRTOS/portable/heap_4.o
+ .debug_info    0x0000cbb4      0x581 ./Core/ThirdParty/FreeRTOS/portable/port.o
+ .debug_info    0x0000d135      0x99a ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_info    0x0000dacf      0xd75 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_info    0x0000e844      0x70b ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_info    0x0000ef4f      0x8ed ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+ .debug_info    0x0000f83c      0x956 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
+ .debug_info    0x00010192     0x15fb ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
 
-.debug_abbrev   0x00000000     0x37cb
+.debug_abbrev   0x00000000     0x3731
  .debug_abbrev  0x00000000      0x1c0 ./Core/MyDRIVERS/ADC/MyAdcDMA.o
  .debug_abbrev  0x000001c0      0x155 ./Core/MyDRIVERS/DMA/MyDMA.o
  .debug_abbrev  0x00000315      0x15b ./Core/MyDRIVERS/GPIO/gpiox.o
@@ -6191,29 +6191,29 @@ LOAD C:/Users/pc/Documents/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32
  .debug_abbrev  0x00000646      0x238 ./Core/MyDRIVERS/USART/MyUsart.o
  .debug_abbrev  0x0000087e      0x10d ./Core/MyDRIVERS/USART/RingBuffer.o
  .debug_abbrev  0x0000098b       0xaa ./Core/MyDRIVERS/USART/retarget.o
- .debug_abbrev  0x00000a35      0x268 ./Core/Src/ILI9341/ILI9341_GFX.o
- .debug_abbrev  0x00000c9d      0x1e8 ./Core/Src/ILI9341/ILI9341_STM32_Driver.o
- .debug_abbrev  0x00000e85      0x1bb ./Core/Src/MyHcsr04.o
- .debug_abbrev  0x00001040       0xfe ./Core/Src/MyRelay.o
- .debug_abbrev  0x0000113e      0x38d ./Core/Src/main.o
- .debug_abbrev  0x000014cb      0x1ee ./Core/Src/stm32f4xx_hal_msp.o
- .debug_abbrev  0x000016b9       0x47 ./Core/Src/stm32f4xx_it.o
- .debug_abbrev  0x00001700      0x1b6 ./Core/Src/syscalls.o
- .debug_abbrev  0x000018b6       0xbc ./Core/Src/sysmem.o
- .debug_abbrev  0x00001972      0x11a ./Core/Src/system_stm32f4xx.o
- .debug_abbrev  0x00001a8c       0x24 ./Core/Startup/startup_stm32f446retx.o
- .debug_abbrev  0x00001ab0       0xee ./Core/ThirdParty/FreeRTOS/Source/list.o
- .debug_abbrev  0x00001b9e      0x2ce ./Core/ThirdParty/FreeRTOS/Source/queue.o
- .debug_abbrev  0x00001e6c      0x391 ./Core/ThirdParty/FreeRTOS/Source/tasks.o
- .debug_abbrev  0x000021fd      0x2d8 ./Core/ThirdParty/FreeRTOS/Source/timers.o
- .debug_abbrev  0x000024d5      0x25a ./Core/ThirdParty/FreeRTOS/portable/heap_4.o
- .debug_abbrev  0x0000272f      0x248 ./Core/ThirdParty/FreeRTOS/portable/port.o
- .debug_abbrev  0x00002977      0x214 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
- .debug_abbrev  0x00002b8b      0x328 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
- .debug_abbrev  0x00002eb3      0x1d4 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
- .debug_abbrev  0x00003087      0x2b6 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
- .debug_abbrev  0x0000333d      0x20a ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
- .debug_abbrev  0x00003547      0x284 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
+ .debug_abbrev  0x00000a35      0x1ce ./Core/Src/ILI9341/ILI9341_GFX.o
+ .debug_abbrev  0x00000c03      0x1e8 ./Core/Src/ILI9341/ILI9341_STM32_Driver.o
+ .debug_abbrev  0x00000deb      0x1bb ./Core/Src/MyHcsr04.o
+ .debug_abbrev  0x00000fa6       0xfe ./Core/Src/MyRelay.o
+ .debug_abbrev  0x000010a4      0x38d ./Core/Src/main.o
+ .debug_abbrev  0x00001431      0x1ee ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_abbrev  0x0000161f       0x47 ./Core/Src/stm32f4xx_it.o
+ .debug_abbrev  0x00001666      0x1b6 ./Core/Src/syscalls.o
+ .debug_abbrev  0x0000181c       0xbc ./Core/Src/sysmem.o
+ .debug_abbrev  0x000018d8      0x11a ./Core/Src/system_stm32f4xx.o
+ .debug_abbrev  0x000019f2       0x24 ./Core/Startup/startup_stm32f446retx.o
+ .debug_abbrev  0x00001a16       0xee ./Core/ThirdParty/FreeRTOS/Source/list.o
+ .debug_abbrev  0x00001b04      0x2ce ./Core/ThirdParty/FreeRTOS/Source/queue.o
+ .debug_abbrev  0x00001dd2      0x391 ./Core/ThirdParty/FreeRTOS/Source/tasks.o
+ .debug_abbrev  0x00002163      0x2d8 ./Core/ThirdParty/FreeRTOS/Source/timers.o
+ .debug_abbrev  0x0000243b      0x25a ./Core/ThirdParty/FreeRTOS/portable/heap_4.o
+ .debug_abbrev  0x00002695      0x248 ./Core/ThirdParty/FreeRTOS/portable/port.o
+ .debug_abbrev  0x000028dd      0x214 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_abbrev  0x00002af1      0x328 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_abbrev  0x00002e19      0x1d4 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_abbrev  0x00002fed      0x2b6 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+ .debug_abbrev  0x000032a3      0x20a ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
+ .debug_abbrev  0x000034ad      0x284 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
 
 .debug_aranges  0x00000000      0xf50
  .debug_aranges
@@ -6529,7 +6529,7 @@ LOAD C:/Users/pc/Documents/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32
  .debug_str     0x000e98cc    0x8b36c ./Core/MyDRIVERS/USART/MyUsart.o
  .debug_str     0x000e98cc    0x8aaa0 ./Core/MyDRIVERS/USART/RingBuffer.o
  .debug_str     0x000e98cc    0x8e078 ./Core/MyDRIVERS/USART/retarget.o
- .debug_str     0x000e98cc    0xdc859 ./Core/Src/ILI9341/ILI9341_GFX.o
+ .debug_str     0x000e98cc    0xdc3cf ./Core/Src/ILI9341/ILI9341_GFX.o
  .debug_str     0x000e98cc    0xde360 ./Core/Src/ILI9341/ILI9341_STM32_Driver.o
  .debug_str     0x000e98cc    0x968f4 ./Core/Src/MyHcsr04.o
  .debug_str     0x000e98cc    0x8ab71 ./Core/Src/MyRelay.o
