@@ -136,7 +136,8 @@ int main(void) {
 	/* USER CODE END Init */
 
 	/* Configure the system clock */
-	SystemClock_Config();
+	//SystemClock_Config();
+	systemClock_180MHz();
 
 	/* USER CODE BEGIN SysInit */
 
