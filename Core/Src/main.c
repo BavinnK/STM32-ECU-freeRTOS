@@ -336,7 +336,7 @@ void xTaskECULogic(void *pvParameters) {
 		}
 
 
-		Usart2_SendString("sup baby");
+		printf("sup baby %d \n\r",9);
 
 
 		xQueueOverwrite(xECUDataQueue, &fuel_lvl);
