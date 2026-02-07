@@ -124,7 +124,7 @@ void ILI9341_Write_Data(uint8_t Data) {
 //HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
 
 	SPI2_pin_HIGH(LCD_DC_PORT, LCD_DC_PIN);
-	SPI2_pin_LOW(LCD_CS_PORT, LCD_CS_Pin);
+	SPI2_pin_LOW(LCD_CS_PORT, LCD_CS_PIN);
 	ILI9341_SPI_Send(Data);
 	SPI2_pin_HIGH(LCD_CS_PORT, LCD_CS_PIN);
 }
@@ -354,7 +354,7 @@ void ILI9341_Draw_Colour(uint16_t Colour) {
 	//HAL_SPI_Transmit(&hspi1, TempBuffer, 2, 1);
 	SPI2_Transmit(TempBuffer,2);
 	//HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
-	SPI2_pin_HIGH(LCD_CS_PORT, LCD_CS_Pin);
+	SPI2_pin_HIGH(LCD_CS_PORT, LCD_CS_PIN);
 }
 
 //INTERNAL FUNCTION OF LIBRARY

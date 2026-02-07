@@ -12,7 +12,7 @@ static inline void set_format(spi_frame_format format){
 
 static inline uint32_t set_freq(uint32_t freq){
 	static const uint16_t psc_table[8]={2,4,8,16,32,64,128,256};
-	static const uint32_t pclk=42000000;//prepherial clock of APB1 bus is 42Mhz rightnow, depending on u freq bus u have to change this variable
+	static const uint32_t pclk=180000000;//prepherial clock of APB1 bus is 180Mhz rightnow, depending on u freq bus u have to change this variable
 	uint32_t closest=0,baud_value=0,best_PSC=0,best_closest=0xFFFFFFFF;
 	for(int i=0;i<=7;i++){
 		baud_value=pclk/psc_table[i];

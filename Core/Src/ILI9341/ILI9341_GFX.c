@@ -340,7 +340,7 @@ void ILI9341_Draw_Image(const char* Image_Array, uint8_t Orientation)
 		
 		//HAL_GPIO_WritePin(GPIOC, CS_Pin, GPIO_PIN_RESET);
 		//HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
-		SPI2_pin_LOW(LCD_CS_PORT, LCD_CS_Pin);
+		SPI2_pin_LOW(LCD_CS_PORT, LCD_CS_PIN);
 
 		unsigned char Temp_small_buffer[BURST_MAX_SIZE];
 		uint32_t counter = 0;
@@ -370,7 +370,7 @@ void ILI9341_Draw_Image(const char* Image_Array, uint8_t Orientation)
 		SPI2_pin_HIGH(LCD_DC_PORT, LCD_DC_PIN);
 		//HAL_GPIO_WritePin(GPIOC, CS_Pin, GPIO_PIN_RESET);
 		//HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
-		SPI2_pin_LOW(LCD_CS_PORT, LCD_CS_Pin);
+		SPI2_pin_LOW(LCD_CS_PORT, LCD_CS_PIN);
 		
 		unsigned char Temp_small_buffer[BURST_MAX_SIZE];
 		uint32_t counter = 0;
