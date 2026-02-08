@@ -5,7 +5,7 @@
 ../Core/Src/main.c:221:6:SystemClock_Config	3
 ../Core/Src/main.c:283:6:xTaskReadADC	1
 ../Core/Src/main.c:301:6:xTaskECULogic	8
-../Core/Src/main.c:349:6:xTaskFanSpeed	2
-../Core/Src/main.c:360:6:xTaskHcsr04	4
-../Core/Src/main.c:390:6:xTaskTFTdraw	4
-../Core/Src/main.c:442:6:Error_Handler	1
+../Core/Src/main.c:350:6:xTaskFanSpeed	2
+../Core/Src/main.c:361:6:xTaskHcsr04	4
+../Core/Src/main.c:391:6:xTaskTFTdraw	4
+../Core/Src/main.c:443:6:Error_Handler	1

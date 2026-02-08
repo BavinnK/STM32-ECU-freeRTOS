@@ -1,5 +1,5 @@
 ../Core/Src/LEGACY_src_drivers/MyHcsr04.c:10:6:hcsr04_init	4	static
-../Core/Src/LEGACY_src_drivers/MyHcsr04.c:41:6:TIM1_CC_IRQHandler	16	static,ignoring_inline_asm
-../Core/Src/LEGACY_src_drivers/MyHcsr04.c:73:6:delay_us_hc	24	static,ignoring_inline_asm
-../Core/Src/LEGACY_src_drivers/MyHcsr04.c:78:6:hcsr04_trig_hc	8	static
-../Core/Src/LEGACY_src_drivers/MyHcsr04.c:83:11:hcsr04_get_pulse_width	4	static
+../Core/Src/LEGACY_src_drivers/MyHcsr04.c:55:6:TIM1_CC_IRQHandler	16	static,ignoring_inline_asm
+../Core/Src/LEGACY_src_drivers/MyHcsr04.c:87:6:delay_us_hc	24	static,ignoring_inline_asm
+../Core/Src/LEGACY_src_drivers/MyHcsr04.c:92:6:hcsr04_trig_hc	8	static
+../Core/Src/LEGACY_src_drivers/MyHcsr04.c:97:10:hcsr04_get_pulse_width	4	static

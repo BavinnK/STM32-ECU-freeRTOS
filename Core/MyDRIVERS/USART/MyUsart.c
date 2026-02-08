@@ -14,7 +14,7 @@ static inline uint32_t set_baud(uint32_t baud){
 	else if(baud==19200) 	return 0x08B9;
 	else if(baud==38400) 	return 0x045D;
 	else if(baud==57600) 	return 0x02D9;
-	else if(baud==115200) 	return 0x016D;
+	else if(baud==115200) 	return 0x0246;
 	else if(baud==230400) 	return 0x00B6;
 	else if(baud==460800) 	return 0x005B;
 	else if(baud==921600) 	return 0x002D;

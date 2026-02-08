@@ -90,7 +90,7 @@ SemaphoreHandle_t xSPIMutex;
 /* USER CODE BEGIN PV */
 volatile uint16_t adc_buffer[2];
 /* USER CODE END PV */
-
+void SystemClock_Config(void);
 /* Private function prototypes -----------------------------------------------*/
 
 /* USER CODE BEGIN PFP */
@@ -314,6 +314,7 @@ void xTaskECULogic(void *pvParameters) {
 		uint16_t data = (received_adc.raw_throttle * 100) / 4095;
 		current_state_disp.throttle_percent = data;
 		current_fan_state.throttle_percent = data;
+		current_state_disp.fuel_percent=fuel_lvl;
 
 		if (current_state_disp.temperature_c >= 60
 				|| current_state_disp.throttle_percent >= 80) {
