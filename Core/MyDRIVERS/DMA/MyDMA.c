@@ -61,7 +61,10 @@ static inline void clear_flags(DMA_Stream_TypeDef *stream){
 void DMAx_init(DMA_TypeDef *DMAx,DMA_config_t* DMA_CONFIG){
 	DMA_config(DMAx);
 	DMA_CONFIG->DMA_STREAM->CR&=~(1);//disable stream first
+	//while (DMA_Stream->CR & DMA_SxCR_EN);
+	while(DMA_CONFIG->DMA_STREAM->CR&DMA_SxCR_EN);
 	clear_flags(DMA_CONFIG->DMA_STREAM);//clear flags
+	DMA_CONFIG->DMA_STREAM->CR=0;
 	DMA_CONFIG->DMA_STREAM->CR|=(DMA_CONFIG->CHANNEL<<25)|
 								(DMA_CONFIG->PRIORITY<<16)|
 								(DMA_CONFIG->MEMORY_DATA_SIZE<<13)|

@@ -40,7 +40,7 @@ static inline void channel_adc(ADC_TypeDef *adc_port,uint8_t chn,uint8_t sample)
 	}
 }
 void adc_dma_init(ADC_TypeDef *adc_port,adc_config_t *ptr,DMA_TypeDef *DMAx,DMA_config_t* DMAx_config,uint8_t num_of_channels) {
-	ADC123_COMMON->CCR&=(3<<16);//clear the prescaler bits
+	ADC123_COMMON->CCR&=~(3<<16);//clear the prescaler bits
 	ADC123_COMMON->CCR|=(2<<16);//divide by 6 from 90 Mhz we get 15 Mhz on the ADC
 	for(int i=0;i<num_of_channels;i++){
 		gpio_set_up config;

@@ -146,7 +146,7 @@ int main(void)
 	adc_config_t adc_config;
 	adc_config.channel[0]=ADCx_CHANNEL_0;
 	adc_config.channel[1]=ADCx_CHANNEL_1;
-	adc_config.sample_time=7;
+	adc_config.sample_time=480;
 
 	DMA_config_t dma_config;
 	dma_config.CHANNEL=0;
@@ -343,7 +343,7 @@ void xTaskECULogic(void *pvParameters) {
 		xQueueOverwrite(xECUDataQueue, &fuel_lvl);
 		xQueueOverwrite(xFanCommandQueue, &current_fan_state);
 		/* run this task 10 times per second */
-		vTaskDelay(pdMS_TO_TICKS(200));
+		vTaskDelay(pdMS_TO_TICKS(100));
 
 	}
 }
