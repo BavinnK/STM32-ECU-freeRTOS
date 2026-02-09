@@ -1,6 +1,0 @@
-../Core/MyDRIVERS/SPI/MySPI2.c:3:20:set_format	3
-../Core/MyDRIVERS/SPI/MySPI2.c:13:24:set_freq	3
-../Core/MyDRIVERS/SPI/MySPI2.c:28:6:SPI2_init	1
-../Core/MyDRIVERS/SPI/MySPI2.c:88:6:SPI2_Transmit	4
-../Core/MyDRIVERS/SPI/MySPI2.c:96:6:SPI2_pin_LOW	1
-../Core/MyDRIVERS/SPI/MySPI2.c:99:6:SPI2_pin_HIGH	1

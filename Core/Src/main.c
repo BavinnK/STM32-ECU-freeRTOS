@@ -37,6 +37,7 @@
 #include "MyAdcDMA.h"
 #include "MyUsart.h"
 #include "clock.h"
+#include "MySPI.h"
 //#include "MyUsart2.h"
 #include "Myhcsr04.h"
 #include "stdio.h"
@@ -139,7 +140,7 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-	SPI2_init(GPIOB, 1, GPIOB, 15, GPIOB, 14, 20, MSB);
+	SPIx_init(SPI1,GPIOB, 1, GPIOB, 15, GPIOB, 14, 20, MSB);
 	relay_init();
 	hcsr04_init();
 	//systemClock_180MHz();
@@ -261,25 +262,6 @@ void SystemClock_Config(void)
   }
 }
 
-/**
-  * @brief USART2 Initialization Function
-  * @param None
-  * @retval None
-  */
-
-/**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
-
-
-/* USER CODE BEGIN 4 */
-
-// ... your RTOS task functions will also go here ...
-/**
- * @brief  xTaskReadADC: Periodically reads the DMA buffer and sends raw sensor data to a queue.
- */
 void xTaskReadADC(void *pvParameters) {
 	ADCData_t adc_data;
 	TickType_t xLastWakeTime = xTaskGetTickCount();
@@ -309,8 +291,9 @@ void xTaskECULogic(void *pvParameters) {
 		// waitin forever until a message arrives in the ADC queue.
 		xQueueReceive(xADCDataQueue, &received_adc, 0);
 		xQueueReceive(xFuelDataQueue, &fuel_lvl, 0);
-
-		current_state_disp.temperature_c = (received_adc.raw_temp * 81) / 1000;
+		uint16_t inverted_raw = 4095 - received_adc.raw_temp;
+		current_state_disp.temperature_c = (inverted_raw * 81) / 1000;
+		//current_state_disp.temperature_c = (received_adc.raw_temp * 81) / 1000;
 		uint16_t data = (received_adc.raw_throttle * 100) / 4095;
 		current_state_disp.throttle_percent = data;
 		current_fan_state.throttle_percent = data;
