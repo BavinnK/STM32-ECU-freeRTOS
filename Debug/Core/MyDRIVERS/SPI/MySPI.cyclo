@@ -3,6 +3,6 @@
 ../Core/MyDRIVERS/SPI/MySPI.c:20:24:set_freq	4
 ../Core/MyDRIVERS/SPI/MySPI.c:36:20:SPI_set	3
 ../Core/MyDRIVERS/SPI/MySPI.c:101:6:SPIx_init	1
-../Core/MyDRIVERS/SPI/MySPI.c:133:6:SPIx_Receive_Transmit	4
+../Core/MyDRIVERS/SPI/MySPI.c:133:6:SPIx_Transmit	4
 ../Core/MyDRIVERS/SPI/MySPI.c:141:6:SPIx_pin_LOW	1
 ../Core/MyDRIVERS/SPI/MySPI.c:144:6:SPIx_pin_HIGH	1

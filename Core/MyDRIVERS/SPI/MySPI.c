@@ -130,7 +130,7 @@ void SPIx_init(SPI_TypeDef *spi,GPIO_TypeDef *portCS,uint8_t CS,GPIO_TypeDef *po
 	spi->CR1&=~(1<<11);//clear DFF bit to set it to 8 bit format
 	spi->CR1|=(1<<2);//set master config
 }
-void SPIx_Receive_Transmit(SPI_TypeDef *spi,void* data,uint16_t size){
+void SPIx_Transmit(SPI_TypeDef *spi,void* data,uint16_t size){
 	for(int i=0;i<size;i++){
 		while(!(spi->SR&(1<<1)));//WAIT UNTIL THE TRANSMIT BUFFER IS EMPTY, afterwards send the data
 		spi->DR=((uint8_t *)(data))[i];
@@ -138,9 +138,9 @@ void SPIx_Receive_Transmit(SPI_TypeDef *spi,void* data,uint16_t size){
 	while(spi->SR&(1<<7));//wait until spi2 is no longer busy
 	(void)spi->DR;//clear the DR cuz we only send data we dont wanna get any data
 }
-void SPIx_pin_LOW(GPIO_TypeDef *port,uint8_t pin){
+void SPIx_pin_LOW(GPIO_TypeDef *port,uint16_t pin){
 	gpio_reset(port, pin);//low
 }
-void SPIx_pin_HIGH(GPIO_TypeDef *port,uint8_t pin){
+void SPIx_pin_HIGH(GPIO_TypeDef *port,uint16_t pin){
 	gpio_set(port, pin);//high
 }
