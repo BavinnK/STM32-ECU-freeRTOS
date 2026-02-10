@@ -140,12 +140,12 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-	SPIx_init(SPI1,GPIOB, 1, GPIOB, 15, GPIOB, 14, 20, MSB);
+	SPIx_init(SPI1,GPIOB, 1, GPIOB, 15, GPIOB, 14, 90000000, MSB);
 	relay_init();
 	hcsr04_init();
 	//systemClock_180MHz();
 	adc_config_t adc_config;
-	adc_config.channel[0]=ADCx_CHANNEL_0;
+	adc_config.channel[0]=ADCx_CHANNEL_4;
 	adc_config.channel[1]=ADCx_CHANNEL_1;
 	adc_config.sample_time=480;
 
@@ -195,7 +195,7 @@ int main(void)
 	 */
 	xTaskCreate(xTaskFanSpeed, "FanSpeed", 512, NULL, 4, NULL); /* Task to get the command from the ecuLogic and depending on that command turns on relays */
 	xTaskCreate(xTaskHcsr04, "fuelData", 256, NULL, 2, NULL); /* this is producer task, it produces data which is the fuel data, and sends the data by Queue to the ecuLogic */
-	xTaskCreate(xTaskTFTdraw, "tftScreen", 1024, NULL, 1, NULL);/* again this is consumer Task, gets the data from the ecuLogic, and prints it on the tft */
+	xTaskCreate(xTaskTFTdraw, "tftScreen", 1024, NULL, 6, NULL);/* again this is consumer Task, gets the data from the ecuLogic, and prints it on the tft */
 
 	vTaskStartScheduler();
 	// Start the ADC DMA transfer. This is fire-and-forget.

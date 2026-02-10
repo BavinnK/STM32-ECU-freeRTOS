@@ -95,14 +95,14 @@
 /* USER DEFINITIONS */
 //#define ILI9341_SPI_PORT hspi1
 
-#define LCD_CS_PORT GPIOC
-#define LCD_CS_PIN  GPIO_PIN_7
+#define LCD_CS_PORT GPIOB
+#define LCD_CS_PIN  1
 
 #define LCD_DC_PORT GPIOB
-#define LCD_DC_PIN  GPIO_PIN_6
+#define LCD_DC_PIN  15
 
-#define LCD_RST_PORT GPIOA
-#define LCD_RST_PIN  GPIO_PIN_9
+#define LCD_RST_PORT GPIOB
+#define LCD_RST_PIN  14
 //-------------------------------------------------------------------//
 
 #define BURST_MAX_SIZE 	500
