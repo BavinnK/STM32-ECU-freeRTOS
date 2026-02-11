@@ -10,7 +10,7 @@ static inline void set_format(SPI_TypeDef *spi,spi_frame_format format){
 }
 
 
-static inline void SPI_set(SPI_TypeDef *spi,uint32_t frequency_Mhz,spi_frame_format format){
+static inline void SPI_set(SPI_TypeDef *spi,spi_frame_format format){
 	if(spi==SPI1){
 		gpio_set_up config_spi_MOSI,config_spi_SCLK;
 		config_spi_MOSI.PINx=7;//PA7
@@ -49,22 +49,17 @@ static inline void SPI_set(SPI_TypeDef *spi,uint32_t frequency_Mhz,spi_frame_for
 		config_spi_SCLK.OTYPERx=GPIOx_OTYPER_PP;
 		config_spi_SCLK.PUPDRx=GPIOx_PUPDR_NONE;
 
-
-
 		gpio_init(GPIOC, &config_spi_MOSI);
-
 		gpio_init(GPIOB, &config_spi_SCLK);
-
 
 		GPIOC->AFR[0]&=~((0b1111<<4*1)|(0b1111<<4*2));
 		GPIOB->AFR[1]&=~(0b1111<<4*(10-8));
 		GPIOC->AFR[0]|=((5<<4*1)|(5<<4*2));
 		GPIOB->AFR[1]|=(5<<4*(10-8));
-
 		RCC->APB1ENR|=(1<<14);//SPIx CLK EN
 	}
 }
-void SPIx_init(SPI_TypeDef *spi,GPIO_TypeDef *portCS,uint16_t CS,GPIO_TypeDef *portDC,uint16_t DC,GPIO_TypeDef *portRST,uint16_t RST,uint32_t frequency_Mhz,spi_frame_format format){
+void SPIx_init(SPI_TypeDef *spi,GPIO_TypeDef *portCS,uint16_t CS,GPIO_TypeDef *portDC,uint16_t DC,GPIO_TypeDef *portRST,uint16_t RST,uint8_t baud_rate_bits,spi_frame_format format){
 	gpio_set_up config_spi_CS,config_spi_DC,config_spi_RST;
 	config_spi_CS.PINx=CS;//user provided CS PIN
 	config_spi_CS.MODERx=GPIOx_MODER_OUTPUT;
@@ -87,12 +82,11 @@ void SPIx_init(SPI_TypeDef *spi,GPIO_TypeDef *portCS,uint16_t CS,GPIO_TypeDef *p
 	gpio_init(portCS, &config_spi_CS);
 	gpio_init(portDC, &config_spi_DC);
 	gpio_init(portRST, &config_spi_RST);
-	SPI_set(spi, frequency_Mhz, format);
+	SPI_set(spi, format);
 	spi->CR1&=~((1<<6)|(0b111<<3)|(1<<1));//DISABLE SPIx FIRST,and clear baud control bits, and then set the clock polarity to low
 	set_format(spi,format);
-	spi->CR1&=~(1<<10);
-	spi->CR1&=~(0b111<<3);
-	spi->CR1|=(0b110<<3)|(1<<2);//set the spi to master, then set the freq that was provided by the user
+	spi->CR1&=~((0b111<<3)|(1<<10));
+	spi->CR1|=(baud_rate_bits<<3)|(1<<2);//set the spi to master, then set the freq that was provided by the user
 	//then set the clock phase so in the second edge the transmission of data beginst the first edge is just a hand shake with the slave device
 	spi->CR1|=(3<<8)|(1<<6);//we set both SSM AND SSI to one, basicallly we tell the spi hey i wanna handle the chip select dont worry, then enable the prepherial
 	spi->CR1&=~(1<<11);//clear DFF bit to set it to 8 bit format

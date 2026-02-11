@@ -140,7 +140,7 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-	SPIx_init(SPI1,GPIOB, 1, GPIOB, 15, GPIOB, 14, 90000000, MSB);
+	SPIx_init(SPI1,GPIOB, 1, GPIOB, 15, GPIOB, 14,0b000, MSB);
 	relay_init();
 	hcsr04_init();
 	//systemClock_180MHz();
