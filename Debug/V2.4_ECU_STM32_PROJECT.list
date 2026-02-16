@@ -1866,59 +1866,59 @@ static inline uint32_t set_baud(uint32_t baud){
 	 * USARTDIV=(fclk/(16*baud))
 	 * the fclk is the frequency of ABP1 BUS which in my case it's 42 Mhz
 	 */
-	if(baud==9600) 			return 0x1258;
+	if(baud==9600) 			return 0x1250;
  8000e98:	687b      	ldr	r3, [r7, #4]
  8000e9a:	f5b3 5f16 	cmp.w	r3, #9600	@ 0x2580
  8000e9e:	d102      	bne.n	8000ea6 <set_baud+0x16>
- 8000ea0:	f241 2358 	movw	r3, #4696	@ 0x1258
+ 8000ea0:	f241 2350 	movw	r3, #4688	@ 0x1250
  8000ea4:	e035      	b.n	8000f12 <set_baud+0x82>
-	else if(baud==14400) 	return 0x0B60;
+	else if(baud==14400) 	return 0x0C35;
  8000ea6:	687b      	ldr	r3, [r7, #4]
  8000ea8:	f5b3 5f61 	cmp.w	r3, #14400	@ 0x3840
  8000eac:	d102      	bne.n	8000eb4 <set_baud+0x24>
- 8000eae:	f44f 6336 	mov.w	r3, #2912	@ 0xb60
+ 8000eae:	f640 4335 	movw	r3, #3125	@ 0xc35
  8000eb2:	e02e      	b.n	8000f12 <set_baud+0x82>
-	else if(baud==19200) 	return 0x08B9;
+	else if(baud==19200) 	return 0x0928;
  8000eb4:	687b      	ldr	r3, [r7, #4]
  8000eb6:	f5b3 4f96 	cmp.w	r3, #19200	@ 0x4b00
  8000eba:	d102      	bne.n	8000ec2 <set_baud+0x32>
- 8000ebc:	f640 03b9 	movw	r3, #2233	@ 0x8b9
+ 8000ebc:	f640 1328 	movw	r3, #2344	@ 0x928
  8000ec0:	e027      	b.n	8000f12 <set_baud+0x82>
-	else if(baud==38400) 	return 0x045D;
+	else if(baud==38400) 	return 0x0494;
  8000ec2:	687b      	ldr	r3, [r7, #4]
  8000ec4:	f5b3 4f16 	cmp.w	r3, #38400	@ 0x9600
  8000ec8:	d102      	bne.n	8000ed0 <set_baud+0x40>
- 8000eca:	f240 435d 	movw	r3, #1117	@ 0x45d
+ 8000eca:	f240 4394 	movw	r3, #1172	@ 0x494
  8000ece:	e020      	b.n	8000f12 <set_baud+0x82>
-	else if(baud==57600) 	return 0x02D9;
+	else if(baud==57600) 	return 0x030D;
  8000ed0:	687b      	ldr	r3, [r7, #4]
  8000ed2:	f5b3 4f61 	cmp.w	r3, #57600	@ 0xe100
  8000ed6:	d102      	bne.n	8000ede <set_baud+0x4e>
- 8000ed8:	f240 23d9 	movw	r3, #729	@ 0x2d9
+ 8000ed8:	f240 330d 	movw	r3, #781	@ 0x30d
  8000edc:	e019      	b.n	8000f12 <set_baud+0x82>
-	else if(baud==115200) 	return 0x0246;
+	else if(baud==115200) 	return 0x0187;
  8000ede:	687b      	ldr	r3, [r7, #4]
  8000ee0:	f5b3 3fe1 	cmp.w	r3, #115200	@ 0x1c200
  8000ee4:	d102      	bne.n	8000eec <set_baud+0x5c>
- 8000ee6:	f240 2346 	movw	r3, #582	@ 0x246
+ 8000ee6:	f240 1387 	movw	r3, #391	@ 0x187
  8000eea:	e012      	b.n	8000f12 <set_baud+0x82>
-	else if(baud==230400) 	return 0x00B6;
+	else if(baud==230400) 	return 0x00C3;
  8000eec:	687b      	ldr	r3, [r7, #4]
  8000eee:	f5b3 3f61 	cmp.w	r3, #230400	@ 0x38400
  8000ef2:	d101      	bne.n	8000ef8 <set_baud+0x68>
- 8000ef4:	23b6      	movs	r3, #182	@ 0xb6
+ 8000ef4:	23c3      	movs	r3, #195	@ 0xc3
  8000ef6:	e00c      	b.n	8000f12 <set_baud+0x82>
-	else if(baud==460800) 	return 0x005B;
+	else if(baud==460800) 	return 0x0062;
  8000ef8:	687b      	ldr	r3, [r7, #4]
  8000efa:	f5b3 2fe1 	cmp.w	r3, #460800	@ 0x70800
  8000efe:	d101      	bne.n	8000f04 <set_baud+0x74>
- 8000f00:	235b      	movs	r3, #91	@ 0x5b
+ 8000f00:	2362      	movs	r3, #98	@ 0x62
  8000f02:	e006      	b.n	8000f12 <set_baud+0x82>
-	else if(baud==921600) 	return 0x002D;
+	else if(baud==921600) 	return 0x0031;
  8000f04:	687b      	ldr	r3, [r7, #4]
  8000f06:	f5b3 2f61 	cmp.w	r3, #921600	@ 0xe1000
  8000f0a:	d101      	bne.n	8000f10 <set_baud+0x80>
- 8000f0c:	232d      	movs	r3, #45	@ 0x2d
+ 8000f0c:	2331      	movs	r3, #49	@ 0x31
  8000f0e:	e000      	b.n	8000f12 <set_baud+0x82>
 	else 					return 0;
  8000f10:	2300      	movs	r3, #0

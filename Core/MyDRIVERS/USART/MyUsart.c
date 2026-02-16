@@ -9,15 +9,15 @@ static inline uint32_t set_baud(uint32_t baud){
 	 * USARTDIV=(fclk/(16*baud))
 	 * the fclk is the frequency of ABP1 BUS which in my case it's 42 Mhz
 	 */
-	if(baud==9600) 			return 0x1258;
-	else if(baud==14400) 	return 0x0B60;
-	else if(baud==19200) 	return 0x08B9;
-	else if(baud==38400) 	return 0x045D;
-	else if(baud==57600) 	return 0x02D9;
-	else if(baud==115200) 	return 0x0246;
-	else if(baud==230400) 	return 0x00B6;
-	else if(baud==460800) 	return 0x005B;
-	else if(baud==921600) 	return 0x002D;
+	if(baud==9600) 			return 0x1250;
+	else if(baud==14400) 	return 0x0C35;
+	else if(baud==19200) 	return 0x0928;
+	else if(baud==38400) 	return 0x0494;
+	else if(baud==57600) 	return 0x030D;
+	else if(baud==115200) 	return 0x0187;
+	else if(baud==230400) 	return 0x00C3;
+	else if(baud==460800) 	return 0x0062;
+	else if(baud==921600) 	return 0x0031;
 	else 					return 0;
 }
 void Usart2_init(uint32_t baudRate){
