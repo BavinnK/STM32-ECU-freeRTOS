@@ -12,7 +12,9 @@ Docker ComposeでSTM32ファームウェアを再現ビルドできるように�
 docker compose run --rm firmware-build
 ```
 
-このコマンドはコンテナ内で次を実行する。
+この1コマンドで、Dockerコンテナの起動から `make` まで実行される。
+
+コンテナ内では次を実行している。
 
 ```sh
 make -C Debug clean && make -C Debug all -j
