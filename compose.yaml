@@ -1,0 +1,9 @@
+services:
+  firmware-build:
+    build:
+      context: .
+    image: project-ignition-firmware-build
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    command: sh -lc "make -C Debug clean && make -C Debug all -j"

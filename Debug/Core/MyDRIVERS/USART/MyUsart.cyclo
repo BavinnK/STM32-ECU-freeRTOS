@@ -1,5 +1,0 @@
-../Core/MyDRIVERS/USART/MyUsart.c:3:24:set_baud	10
-../Core/MyDRIVERS/USART/MyUsart.c:23:6:Usart2_init	1
-../Core/MyDRIVERS/USART/MyUsart.c:46:6:Usart2_SendByte	2
-../Core/MyDRIVERS/USART/MyUsart.c:54:6:Usart2_SendString	2
-../Core/MyDRIVERS/USART/MyUsart.c:60:6:USART2_IRQHandler	4

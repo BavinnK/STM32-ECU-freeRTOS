@@ -6,4 +6,4 @@
 ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c:288:19:HAL_PWREx_ControlVoltageScaling	32	static
 ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c:413:19:HAL_PWREx_EnableOverDrive	16	static
 ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c:460:19:HAL_PWREx_DisableOverDrive	16	static
-../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c:536:19:HAL_PWREx_EnterUnderDriveSTOPMode	24	static,ignoring_inline_asm
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c:536:19:HAL_PWREx_EnterUnderDriveSTOPMode	24	static

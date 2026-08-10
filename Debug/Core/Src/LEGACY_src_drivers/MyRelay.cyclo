@@ -1,2 +1,0 @@
-../Core/Src/LEGACY_src_drivers/MyRelay.c:3:6:relay_init	1
-../Core/Src/LEGACY_src_drivers/MyRelay.c:32:6:relay_set_fan_speed	5
