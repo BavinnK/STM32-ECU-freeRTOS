@@ -70,8 +70,8 @@ all: main-build
 main-build: V2.4_ECU_STM32_PROJECT.elf secondary-outputs
 
 # Tool invocations
-V2.4_ECU_STM32_PROJECT.elf V2.4_ECU_STM32_PROJECT.map: $(OBJS) $(USER_OBJS) C:\Users\pc\Desktop\STM_PROJECTS\V2.4_ECU_STM32_PROJECT\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "V2.4_ECU_STM32_PROJECT.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\pc\Desktop\STM_PROJECTS\V2.4_ECU_STM32_PROJECT\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="V2.4_ECU_STM32_PROJECT.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+V2.4_ECU_STM32_PROJECT.elf V2.4_ECU_STM32_PROJECT.map: $(OBJS) $(USER_OBJS) ../STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "V2.4_ECU_STM32_PROJECT.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"../STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="V2.4_ECU_STM32_PROJECT.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
